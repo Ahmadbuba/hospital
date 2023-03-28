@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: Hospital System
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hospital
+    username: postgres
+    password: Ahmad
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    schemas: hospital
+    baseline-on-migrate: true
+    baseline-version: '0'
+    user: postgres
+    password: Ahmad
+
