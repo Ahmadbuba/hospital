@@ -25,7 +25,10 @@ public class Patient {
 	@JoinColumn(name = "address_id")
 	private Address address;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(
+			cascade = CascadeType.ALL,
+			fetch = FetchType.LAZY
+	)
 	@JoinColumn(name = "personal_detail_id")
 	private PersonalDetail personalDetail;
 
