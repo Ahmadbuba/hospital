@@ -7,7 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name="personal_detail")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Getter @NoArgsConstructor @AllArgsConstructor
 public class PersonalDetail {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)

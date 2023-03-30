@@ -3,11 +3,12 @@ package com.system.hospital.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="person")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Getter @NoArgsConstructor @AllArgsConstructor
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

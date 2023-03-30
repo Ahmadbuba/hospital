@@ -6,12 +6,13 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name="doctor")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Getter @NoArgsConstructor @AllArgsConstructor
 public class Doctor {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
