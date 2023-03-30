@@ -36,15 +36,6 @@ public class PatientController {
 				.filter(name -> !firstName.isEmpty())
 				.map(name -> patientRepo.findByPersonFirstNameContaining(name))
 				.orElseGet(patientRepo::findAll);
-
-
-
-
-//		if (firstName == null) 
-//			patientRepo.findAll().forEach(patients::add);
-//		else
-//			patientRepo.findByFirstNameContaining(firstName).forEach(patients::add);
-		
 		
 		if(patients.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -79,6 +70,7 @@ public class PatientController {
 	
 	@DeleteMapping("/patients/{id}")
 	public ResponseEntity<Patient> deletePatient(@PathVariable("id") long id) {
+		// should i add orElseThrow with ResourceNotFoundException here?
 		patientRepo.deleteById(id);
 		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
