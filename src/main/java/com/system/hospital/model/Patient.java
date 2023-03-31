@@ -19,8 +19,8 @@ public class Patient {
 	private long id;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "detail_id")
-	private Person patientDetail;
+	@JoinColumn(name = "person_id")
+	private Person person;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")

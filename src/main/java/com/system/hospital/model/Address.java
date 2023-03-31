@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="address")
-@Getter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@NoArgsConstructor @AllArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -14,7 +14,12 @@ public class NextOfKin {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="id")
     private long id;
-    private Person nextOfKinDetail;
-    private Address address;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private Person person;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
 }

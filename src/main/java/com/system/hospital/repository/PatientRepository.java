@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-	List<Patient> findByPersonFirstNameContaining(String firstName);
+	List<Patient> findByPerson_FirstNameContaining(String firstName);
 }
