@@ -7,19 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="doctor")
+@Table(name="next_of_kin")
 @Getter @NoArgsConstructor @AllArgsConstructor
 public class NextOfKin {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="id")
     private long id;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "detail_id")
     private Person nextOfKinDetail;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "detail_id")
     private Address address;
+
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.system.hospital.exception.ResourceNotFoundException;
 import com.system.hospital.model.Patient;
 import com.system.hospital.repository.PatientRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,14 +54,14 @@ public class PatientController {
 	}
 	
 	@PostMapping("/patients")
-	public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+	public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
 		Patient thePatient = patientRepo.save(patient);
 		return new ResponseEntity<>(thePatient, HttpStatus.CREATED);
 	}
 	
 	
 	@PutMapping("/patients/{id}")
-	public ResponseEntity<Patient> updatePatient(@PathVariable("id") long id, @RequestBody Patient patient) {
+	public ResponseEntity<Patient> updatePatient(@PathVariable("id") long id, @Valid @RequestBody Patient patient) {
 		Patient thePatient = patientRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
 		
