@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.system.hospital.exception.ResourceNotFoundException;
 import com.system.hospital.model.Patient;
+import com.system.hospital.model.Person;
 import com.system.hospital.repository.PatientRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public class PatientController {
 
 		patients = Optional.ofNullable(firstName)
 				.filter(name -> !firstName.isEmpty())
-				.map(name -> patientRepo.findByPerson_FirstNameContaining(name))
+				.map(name -> patientRepo.findByPersonFirstName(name))
 				.orElseGet(patientRepo::findAll);
 		
 		if(patients.isEmpty()) {
@@ -52,13 +53,12 @@ public class PatientController {
 		
 		return new ResponseEntity<>(patient, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/patients")
 	public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
 		Patient thePatient = patientRepo.save(patient);
 		return new ResponseEntity<>(thePatient, HttpStatus.CREATED);
 	}
-	
 	
 	@PutMapping("/patients/{id}")
 	public ResponseEntity<Patient> updatePatient(@PathVariable("id") long id, @Valid @RequestBody Patient patient) {
