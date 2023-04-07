@@ -1,6 +1,8 @@
 package com.system.hospital.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,17 +16,16 @@ public class DoctorNextOfKin {
     @Column(name="id")
     private long id;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride( name = "firstName", column = @Column(name =
-                    "first_name")),
-            @AttributeOverride( name = "lastName", column = @Column(name =
-                    "last_name")),
-            @AttributeOverride( name = "gender", column = @Column(name =
-                    "gender", nullable = false))
+    @NotBlank(message = "First name cannot be empty")
+    private String firstName;
 
-    })
-    private Person person;
+    @NotBlank(message = "Last name cannot be empty")
+    private String lastName;
+
+
+    @Enumerated(EnumType.STRING)
+    @NotEmpty
+    private Gender gender;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")

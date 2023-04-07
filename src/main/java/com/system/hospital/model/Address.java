@@ -2,7 +2,6 @@ package com.system.hospital.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,12 +11,15 @@ import lombok.NoArgsConstructor;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private long id;
     @Column(name = "house_number")
-    private int houseNumber;
+    private Integer houseNumber;
 
+    @Column(name = "street")
     private String street;
 
+    @Column(name = "state")
     private String state;
 
 }

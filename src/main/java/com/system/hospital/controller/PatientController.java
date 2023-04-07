@@ -36,7 +36,7 @@ public class PatientController {
 
 		patients = Optional.ofNullable(firstName)
 				.filter(name -> !firstName.isEmpty())
-				.map(name -> patientRepo.findByPersonFirstName(name))
+				.map(name -> patientRepo.findByFirstName(name))
 				.orElseGet(patientRepo::findAll);
 		
 		if(patients.isEmpty()) {

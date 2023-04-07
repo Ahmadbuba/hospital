@@ -1,6 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS hospital;
 
-
 CREATE TABLE IF NOT EXISTS address (
        id bigint not null,
         house_number integer,
@@ -17,6 +16,8 @@ CREATE TABLE IF NOT EXISTS personal_detail (
         weight float(53),
         primary key (id)
     );
+
+
 
 
 CREATE TABLE IF NOT EXISTS patient (
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS doctor (
         last_name varchar(255),
         address_id bigint,
         personal_detail_id bigint,
-        primary key (id),
+    primary key (id),
         FOREIGN KEY(address_id)
             REFERENCES address(id),
         FOREIGN KEY(personal_detail_id)
@@ -58,7 +59,7 @@ CREATE TABLE IF NOT EXISTS doctor_next_of_kin (
         gender varchar(255) not null,
         last_name varchar(255),
         address_id bigint,
-	doctor_id bigint,
+	    doctor_id bigint,
         primary key (id),
         FOREIGN KEY(address_id)
             REFERENCES address(id),

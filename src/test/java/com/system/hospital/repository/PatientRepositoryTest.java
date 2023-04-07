@@ -1,6 +1,7 @@
 package com.system.hospital.repository;
 
 import com.system.hospital.model.*;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -17,14 +18,17 @@ class PatientRepositoryTest {
     private PatientRepository patientRepository;
 
     @Test
-    public void getAllPatientsWherePersonFirstNameContaining() {
+    public void savePatient() {
 
         // given
-
-
+        Patient patient =  Patient.builder()
+                .firstName("Ahmad")
+                .lastName("Buba")
+                .gender(Gender.MALE).build();
         // when
-
+        Patient savedPatient = patientRepository.save(patient);
         // then
+        Assertions.assertThat(savedPatient).isNotNull();
 
     }
 
