@@ -7,8 +7,7 @@ spring:
     password: Ahmad
   jpa:
     hibernate:
-      default_schema: hospital
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -17,7 +16,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     schemas: hospital
-    enabled: false
     baseline-on-migrate: true
     baseline-version: 0
     user: postgres
