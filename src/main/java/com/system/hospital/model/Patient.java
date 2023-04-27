@@ -1,17 +1,14 @@
 package com.system.hospital.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 
 @Entity
 @Table(name= "patient")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Patient {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
