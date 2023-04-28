@@ -31,8 +31,7 @@ public class HealthRecord {
 	)
 	@JoinColumn(
 			name="patient_id",
-			nullable=false,
-			updatable = false
+			nullable=false
 	)
 	private Patient patient;
 	

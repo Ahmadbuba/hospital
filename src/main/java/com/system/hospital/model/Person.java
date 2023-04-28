@@ -1,26 +1,19 @@
 package com.system.hospital.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
-@Entity
-@Table(name="person")
-@Getter @NoArgsConstructor @AllArgsConstructor
+@Embeddable
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Person {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
-
-    @Column(name="first_name", nullable=false)
+    @NotBlank(message = "First name cannot be empty")
     private String firstName;
 
-    @Column(name="last_name", nullable=false)
     private String lastName;
 
-    @Column(nullable=false)
     @Enumerated(EnumType.STRING)
+    @NonNull
     private Gender gender;
 }

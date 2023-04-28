@@ -15,9 +15,9 @@ public class Address {
     private long id;
     @Column(name = "house_number")
     private int houseNumber;
-    @Column(nullable = false)
+
     private String street;
-    @Column(nullable = false)
+
     private String state;
 
 }
