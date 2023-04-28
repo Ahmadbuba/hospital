@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @AllArgsConstructor
 public class PatientController {
-	private final PatientRepository patientRepo;
 	private final PatientService patientService;
 
 	@PostMapping("/patients")
@@ -44,67 +43,34 @@ public class PatientController {
 		patientService.createPatient(patientDto);
 		return ResponseEntity.ok().build();
 	}
-	@GetMapping("/patients")
-	public ResponseEntity<List<PatientResponseDto>> getAllPatients(@RequestParam(required = false) String firstName) {
-		List<Patient> patients = new ArrayList<Patient>();
 
-		patients = Optional.ofNullable(firstName)
-				.filter(name -> !firstName.isEmpty())
-				.map(name -> patientRepo.findByPersonFirstName(name))
-				.orElseGet(patientRepo::findAll);
+	@GetMapping("/patients")
+	public ResponseEntity<List<PatientResponseDto>> getPatients(@RequestParam(required = false) String firstName) {
+		List<PatientResponseDto> patients = patientService.getAllPatients(Optional.ofNullable(firstName));
 		
 		if(patients.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
-		List <PatientResponseDto> allPatients = patients.stream()
-				.map(patient -> convertToPatientResponseDto(patient))
-				.collect(Collectors.toList());
-		return new ResponseEntity<>(allPatients, HttpStatus.OK);
+		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
 	
 	@GetMapping("/patients/{id}")
-	public ResponseEntity<PatientResponseDto> getPatientById(@PathVariable("id") long id) {
-		PatientResponseDto patient = patientRepo.findById(id)
-				.map(p -> convertToPatientResponseDto(p))
-				.orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-		
-		return new ResponseEntity<>(patient, HttpStatus.OK);
+	public ResponseEntity<PatientResponseDto> patientDetail(@PathVariable("id") long id) {
+		return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.OK);
 	}
 	
 	@PutMapping("/patients/{id}")
-	public ResponseEntity<Patient> updatePatient(@PathVariable("id") long id, @Valid @RequestBody PatientDto patientDto) {
-		Patient thePatient = patientRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-
-
-		
-		return new ResponseEntity<>(patientRepo.save(thePatient), HttpStatus.OK);
+	public ResponseEntity<PatientResponseDto> updatePatient(@PathVariable("id") long id, @Valid @RequestBody PatientDto patientDto, BindingResult bindingResult) {
+		return new ResponseEntity<>(patientService.updatePatient(patientDto,id), HttpStatus.OK);
 	}
 	
 	
 	@DeleteMapping("/patients/{id}")
-	public ResponseEntity<Patient> deletePatient(@PathVariable("id") long id) {
-		// should i add orElseThrow with ResourceNotFoundException here?
-		patientRepo.deleteById(id);
-		
+	public ResponseEntity<String> deletePatient(@PathVariable("id") long id) {
+		patientService.deletePatient(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	private String convertEnumToString(Gender value) {
-		String res = value.toString().toLowerCase();
-		res = res.substring(0,1).toUpperCase() + res.substring(1);
-		return res;
-	}
-
-    private PatientResponseDto convertToPatientResponseDto(Patient patient) {
-		PatientResponseDto thePatient = PatientResponseDto.builder()
-				.id(patient.getId())
-				.firstName(patient.getPerson().getFirstName())
-				.lastName(patient.getPerson().getLastName())
-				.gender(convertEnumToString(patient.getPerson().getGender()))
-				.build();
-		return thePatient;
-	}
 
 }
