@@ -1,17 +1,17 @@
 package com.system.hospital.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.system.hospital.constraint.ValueOfEnum;
 import com.system.hospital.model.Gender;
-import jakarta.persistence.Column;
+import com.system.hospital.jackson.CustomDeserializer;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
 public record PatientDto(
-        @NotBlank
+        @JsonDeserialize(using = CustomDeserializer.class) @NotBlank
         String firstName,
+        @JsonDeserialize(using = CustomDeserializer.class)
         String lastName,
         @ValueOfEnum(enumClass = Gender.class)
         String gender

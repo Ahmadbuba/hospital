@@ -41,7 +41,7 @@ public class PatientServiceImpl implements PatientService {
         String theName = firstName.isPresent() ? firstName.get() : null;
 
         patients = Optional.ofNullable(theName)
-                .filter(name -> !firstName.isEmpty())
+                .filter(name -> !theName.isEmpty())
                 .map(name -> patientRepository.findByPersonFirstName(name))
                 .orElseGet(patientRepository::findAll);
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.system.hospital.dto.AddressDto;
 import com.system.hospital.dto.PatientDto;
 import com.system.hospital.dto.PatientResponseDto;
 import com.system.hospital.exception.ResourceNotFoundException;
@@ -36,10 +37,7 @@ public class PatientController {
 	private final PatientService patientService;
 
 	@PostMapping("/patients")
-	public ResponseEntity<String> createPatient(@Valid @RequestBody PatientDto patientDto, BindingResult bindingResult) {
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().body(bindingResult.getAllErrors().toString());
-		}
+	public ResponseEntity<String> createPatient(@Valid @RequestBody PatientDto patientDto) {
 		patientService.createPatient(patientDto);
 		return ResponseEntity.ok().build();
 	}
@@ -72,5 +70,9 @@ public class PatientController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	@PostMapping("/patients/{id}/address")
+	public ResponseEntity<String> addAddress(@PathVariable("id")long patientId, AddressDto addressDto) {
+		return null;
+	}
 
 }

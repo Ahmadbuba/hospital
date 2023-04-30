@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "patient")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Patient {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
