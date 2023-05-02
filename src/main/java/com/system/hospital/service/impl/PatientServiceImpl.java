@@ -1,18 +1,17 @@
-package com.system.hospital.service;
+package com.system.hospital.service.impl;
 
+import com.system.hospital.dto.AddressDto;
+import com.system.hospital.dto.NextOfKinDto;
 import com.system.hospital.dto.PatientDto;
-import com.system.hospital.dto.PatientResponseDto;
+import com.system.hospital.dto.PatientResponse;
 import com.system.hospital.exception.ResourceNotFoundException;
-import com.system.hospital.model.Gender;
-import com.system.hospital.model.Patient;
-import com.system.hospital.model.Person;
+import com.system.hospital.model.*;
 import com.system.hospital.repository.PatientRepository;
+import com.system.hospital.service.PatientService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,20 +22,38 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void createPatient(PatientDto patientDto) {
         Person thePerson = Person.builder()
-                .firstName(patientDto.firstName())
-                .lastName(patientDto.lastName())
+                .firstName(patientDto.first_name())
+                .lastName(patientDto.last_name())
                 .gender(patientDto.gender().equalsIgnoreCase("MALE")? Gender.MALE: Gender.FEMALE)
                 .build();
         Patient thePatient = Patient.builder()
                 .person(thePerson)
                 .build();
         patientRepository.save(thePatient);
+
+        patientDto.next_of_kins().stream().map()
+
+        Address address = Address.builder()
+                .state(patientDto.address().state())
+                .houseNumber(patientDto.address().houseNumber())
+                .street(patientDto.address().street())
+                .build();
+        PersonalDetail  personalDetail = PersonalDetail.builder()
+                .bloodGroup(patientDto.personal_details().bloodGroup())
+                .weight(patientDto.personal_details().weight())
+                .genoType(patientDto.personal_details().genoType())
+                .build();
+        PatientNextOfKin patientNextOfKin = PatientNextOfKin.builder()
+                .patient(patientDto)
+                .build();
+        HealthRecord healthRecord;
+
     }
 
 
     @Override
-    public List<PatientResponseDto> getAllPatients(Optional<String> firstName) {
-        List<PatientResponseDto> allPatients = new ArrayList<>();
+    public List<PatientResponse> getAllPatients(Optional<String> firstName) {
+        List<PatientResponse> allPatients = new ArrayList<>();
         List<Patient> patients = new ArrayList<>();
         String theName = firstName.isPresent() ? firstName.get() : null;
 
@@ -54,7 +71,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponseDto getPatientById(long id) {
+    public PatientResponse getPatientById(long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
 
@@ -62,7 +79,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponseDto updatePatient(PatientDto patientDto, long id) {
+    public PatientResponse updatePatient(PatientDto patientDto, long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
         Patient updatedPatient = patientRepository.save(convertToPatientEntity(patientDto, id));
@@ -80,13 +97,15 @@ public class PatientServiceImpl implements PatientService {
         Patient thePatient = Patient.builder()
                 .id(id)
                 .person(Person.builder()
-                        .firstName(patientDto.firstName())
-                        .lastName(patientDto.lastName())
-                        .gender(patientDto.gender().equalsIgnoreCase("Male")? Gender.MALE: Gender.FEMALE)
+                        .firstName(patientDto.first_name())
+                        .lastName(patientDto.last_name())
+                        .gender(getGender(patientDto.gender()))
                         .build())
                 .build();
         return thePatient;
     }
+
+
 
     private String convertEnumToString(Gender value) {
         String res = value.toString().toLowerCase();
@@ -94,14 +113,28 @@ public class PatientServiceImpl implements PatientService {
         return res;
     }
 
-    private PatientResponseDto convertToPatientResponseDto(Patient patient) {
-        PatientResponseDto thePatient = PatientResponseDto.builder()
+    private static Gender getGender(String patientDto) {
+        return patientDto.equalsIgnoreCase("Male") ? Gender.MALE : Gender.FEMALE;
+    }
+    private PatientResponse convertToPatientResponseDto(Patient patient) {
+        PatientResponse thePatient = PatientResponse.builder()
                 .id(patient.getId())
                 .firstName(patient.getPerson().getFirstName())
                 .lastName(patient.getPerson().getLastName())
                 .gender(convertEnumToString(patient.getPerson().getGender()))
                 .build();
         return thePatient;
+    }
+
+    private PatientNextOfKin convertFromDtoToPatientNextOfKin(NextOfKinDto nextOfKinDto) {
+        PatientNextOfKin theNextOfKin = PatientNextOfKin.builder()
+                .person(Person.builder()
+                        .firstName(nextOfKinDto.first_name())
+                        .lastName(nextOfKinDto.last_name())
+                        .gender(nextOfKinDto.gender())
+                        .build()
+                )
+                .build();
     }
 
 }

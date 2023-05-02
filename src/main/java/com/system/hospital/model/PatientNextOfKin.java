@@ -2,11 +2,13 @@ package com.system.hospital.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="patient_next_of_kin")
+@Builder
 @Getter @NoArgsConstructor @AllArgsConstructor
 public class PatientNextOfKin {
     @Id

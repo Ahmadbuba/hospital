@@ -42,7 +42,7 @@ public class Patient {
 			fetch = FetchType.LAZY,
 			mappedBy = "patient"
 	)
-	private List<PatientNextOfKin> patientnextOfKins;
+	private List<PatientNextOfKin> patientNextOfKinList;
 
 	@OneToMany(
 			fetch = FetchType.LAZY,
