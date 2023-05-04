@@ -8,6 +8,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Constraint(validatedBy = ValueOfEnumValidator.class)
 @Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
@@ -16,7 +19,7 @@ public @interface ValueOfEnum {
     /**
      * @return class containing enum values to which this String should match
      */
-    Class<? extends Enum<?>> enumClass();;
+    Class<? extends Enum<?>> enumClass();
 
     /**
      * @return the error message template
@@ -33,4 +36,5 @@ public @interface ValueOfEnum {
      * @return the payload associated to the constraint
      */
     Class<? extends Payload>[] payload() default {};
+
 }

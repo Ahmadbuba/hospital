@@ -7,6 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name="personal_detail")
+@Builder
 @Getter @NoArgsConstructor @AllArgsConstructor
 public class PersonalDetail {
 	@Id

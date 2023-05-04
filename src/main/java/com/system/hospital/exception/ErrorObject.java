@@ -11,12 +11,12 @@ import java.util.Date;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
 public class ErrorObject {
-    private Integer statusCode;
-    private String message;
+    private HttpStatus status;
+    private Object message;
     private LocalDateTime timestamp;
 
     public static ErrorObject instanceOf(HttpStatus status, String message) {
-        return new ErrorObject(status.value(), message, LocalDateTime.now());
+        return new ErrorObject(status, message, LocalDateTime.now());
     }
 
 }

@@ -11,6 +11,7 @@ import lombok.*;
 
 @Entity
 @Table( name="health_record")
+@Builder
 @Data @NoArgsConstructor @AllArgsConstructor
 public class HealthRecord {
 	

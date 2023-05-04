@@ -1,13 +1,11 @@
 package com.system.hospital.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name="address")
+@Builder
 @Getter @NoArgsConstructor @AllArgsConstructor
 public class Address {
     @Id

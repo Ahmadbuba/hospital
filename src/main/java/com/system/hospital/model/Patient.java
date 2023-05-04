@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "patient")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Patient {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -42,7 +42,7 @@ public class Patient {
 			fetch = FetchType.LAZY,
 			mappedBy = "patient"
 	)
-	private List<PatientNextOfKin> patientnextOfKins;
+	private List<PatientNextOfKin> patientNextOfKinList;
 
 	@OneToMany(
 			fetch = FetchType.LAZY,
