@@ -1,12 +1,15 @@
 package com.system.hospital.model;
 
+import com.system.hospital.dto.PersonDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.util.Optional;
+
 @Embeddable
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Person {
     @NotBlank(message = "First name cannot be empty")
     private String firstName;
@@ -16,4 +19,12 @@ public class Person {
     @Enumerated(EnumType.STRING)
     @NonNull
     private Gender gender;
+
+    void updatePerson(PersonDto personDto) {
+        this.firstName = personDto.firstName();
+        Optional.ofNullable(personDto.lastName())
+                .map(lastName -> this.lastName = personDto.lastName())
+                .orElse(this.lastName);
+        this.gender = personDto.gender();
+    }
 }

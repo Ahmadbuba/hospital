@@ -15,6 +15,7 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
+    locations: classpath:db/migration
     schemas: hospital
     baseline-on-migrate: true
     baseline-version: 0

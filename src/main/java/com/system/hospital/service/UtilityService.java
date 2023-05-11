@@ -1,91 +1,59 @@
-package com.system.hospital.service.impl;
+package com.system.hospital.service;
 
 import com.system.hospital.dto.*;
-import com.system.hospital.exception.ResourceNotFoundException;
 import com.system.hospital.model.*;
-import com.system.hospital.repository.PatientRepository;
-import com.system.hospital.service.PatientService;
-import com.system.hospital.service.UtilityService;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
-public class PatientServiceImpl implements PatientService {
-    private PatientRepository patientRepository;
-    @Override
-    public long createPatient(PatientDto patientDto) {
-        Patient patient = UtilityService.convertPatientDtoToPatient(patientDto);
-        patientRepository.save(patient);
-        return patient.getId();
-    }
-    @Override
-    public List<PatientResponse> getAllPatients(Optional<String> firstName) {
-        List <Patient> thePatients = new ArrayList<>();
-        List<PatientResponse> conversions = new ArrayList<>();
-        if (!firstName.isPresent()) {
-            thePatients = patientRepository.findAll();
-        } else thePatients = patientRepository.findByPersonFirstName(firstName.get());
+public class UtilityService {
 
-        if (!thePatients.isEmpty()) {
-            conversions = thePatients.stream()
-                    .map(patient -> UtilityService.convertFromPatientToPatientDto(patient))
-                    .collect(Collectors.toList());
-        }
-        return conversions;
-
+    public static Gender getGenderEnum(String theGender) {
+            return theGender.equalsIgnoreCase("Male") ? Gender.MALE : Gender.FEMALE;
     }
 
-    @Override
-    public PatientResponse getPatientById(long id) {
-        Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-        return UtilityService.convertFromPatientToPatientDto(patient);
-    }
-
-    @Override
-    public long updatePatient(PatientDto patientDto, long id) {
-        Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-        patient.updatePatient(patientDto);
-        patientRepository.save(patient);
-        return patient.getId();
-    }
-
-    @Override
-    public void deletePatient(long id) {
-        Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-        patientRepository.delete(patient);
-    }
-
-    private List<PatientResponse> getPatients() {
-        List<PatientResponse> thePatients = new ArrayList<>();
-        List <Patient> patients = patientRepository.findAll();
-        if (!patients.isEmpty()) {
-            thePatients = patients.stream().map(patient -> convertFromPatientToPatientDto(patient)).collect(Collectors.toList());
-        }
-        return thePatients;
-    }
-
-    static Gender getGenderEnum(String theGender) {
-        return theGender.equalsIgnoreCase("Male") ? Gender.MALE : Gender.FEMALE;
-    }
-    static String getGenderString(Gender theGender) {
+   public static String getGenderString(Gender theGender) {
         return theGender.toString();
     }
-    private Person buildPerson (String firstName, String lastName, Gender gender) {
-        return Person.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .gender(gender)
+    public static String getString(Optional<String> theString) {
+        return theString.isPresent() ? theString.get() : null;
+    }
+
+    public static PersonDto buildPersonDto(PatientDto patientDto) {
+       return PersonDto.builder()
+                .firstName(patientDto.first_name())
+                .lastName(UtilityService.getString(Optional.ofNullable(patientDto.last_name())))
+                .gender(UtilityService.getGenderEnum(patientDto.gender()))
                 .build();
     }
 
-    private Address buildAdress(Optional<AddressDto> addressDto) {
+    public static PatientNextOfKin convertToNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
+        Address theAddress = Optional.ofNullable(patientNextOfKinDto.address())
+                .map(pNXKAddress -> buildAdress(Optional.ofNullable(patientNextOfKinDto.address())))
+                .orElse(null);
+        PersonDto personDto = PersonDto.builder()
+                .firstName(patientNextOfKinDto.first_name())
+                .lastName(getString(Optional.ofNullable(patientNextOfKinDto.last_name())))
+                .gender(getGenderEnum(patientNextOfKinDto.gender()))
+                .build();
+        PatientNextOfKin theKin = PatientNextOfKin.builder()
+                .address(theAddress)
+                .person(Person.builder()
+                        .firstName(personDto.firstName())
+                        .lastName(personDto.lastName())
+                        .gender(personDto.gender())
+                        .build())
+                .build();
+        return theKin;
+    }
+
+    public static Address buildAdress(Optional<AddressDto> addressDto) {
         if (addressDto.isPresent()) {
             AddressDto theAddressDto = addressDto.get();
             Address conversion = Address.builder()
@@ -98,20 +66,55 @@ public class PatientServiceImpl implements PatientService {
         return null;
     }
 
-    private PersonalDetail buildPersonalDetail(Optional<PersonalDetailDto> personalDetailDto) {
+    public static Patient convertPatientDtoToPatient(PatientDto patientDto) {
+        Person thePerson = buildPerson(
+                patientDto.first_name(),
+                getString(Optional.ofNullable(patientDto.last_name())),
+                getGenderEnum(patientDto.gender())
+        );
+
+        Address theAddress = buildAdress(
+                Optional.ofNullable(patientDto.address())
+        );
+
+        PersonalDetail thePersonalDetail = buildPersonalDetail(
+                Optional.ofNullable(patientDto.personal_details())
+        );
+
+        List<PatientNextOfKin> theNextOfKins = returnNextOfKins(
+                Optional.ofNullable(patientDto.next_of_kins())
+        );
+        Patient thePatient = Patient.builder()
+                .person(thePerson)
+                .address(theAddress)
+                .personalDetail(thePersonalDetail)
+                .patientNextOfKinList(theNextOfKins)
+                .build();
+        return thePatient;
+    }
+
+    public static Person buildPerson (String firstName, String lastName, Gender gender) {
+        return Person.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .gender(gender)
+                .build();
+    }
+
+    public static PersonalDetail buildPersonalDetail(Optional<PersonalDetailDto> personalDetailDto) {
         if(personalDetailDto.isPresent()) {
             PersonalDetailDto thePersonalDetail = personalDetailDto.get();
             PersonalDetail conversion = PersonalDetail.builder()
                     .weight(thePersonalDetail.weight())
-                    .bloodGroup(thePersonalDetail.bloodGroup())
-                    .genoType(thePersonalDetail.genoType())
+                    .bloodGroup(getString(Optional.ofNullable(thePersonalDetail.bloodGroup())))
+                    .genoType(getString(Optional.ofNullable(thePersonalDetail.genoType())))
                     .build();
             return conversion;
         }
         return null;
     }
 
-    private PatientNextOfKin buildPatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
+    public static PatientNextOfKin buildPatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
         PatientNextOfKin conversion = PatientNextOfKin.builder()
                 .person(
                         buildPerson(
@@ -129,7 +132,7 @@ public class PatientServiceImpl implements PatientService {
 
         return conversion;
     }
-    private List<PatientNextOfKin> returnNextOfKins(Optional<List<PatientNextOfKinDto>> nextOfKinDtos) {
+    public static List<PatientNextOfKin> returnNextOfKins(Optional<List<PatientNextOfKinDto>> nextOfKinDtos) {
         List<PatientNextOfKin> theNextOfKins = new ArrayList<>();
         if (nextOfKinDtos.isPresent()) {
             if (nextOfKinDtos.get().size() > 0) {
@@ -142,7 +145,7 @@ public class PatientServiceImpl implements PatientService {
         return theNextOfKins;
     }
 
-    private PatientResponse convertFromPatientToPatientDto(Patient patient) {
+    public static PatientResponse convertFromPatientToPatientDto(Patient patient) {
         PatientResponse patientResponse = PatientResponse.builder()
                 .id(patient.getId())
                 .firstName(patient.getPerson().getFirstName())
@@ -154,7 +157,7 @@ public class PatientServiceImpl implements PatientService {
         return patientResponse;
     }
 
-    private AddressDto buildAdressDto(Optional<Address> address) {
+    public static AddressDto buildAdressDto(Optional<Address> address) {
         if (address.isPresent()) {
             Address theAddress = address.get();
             AddressDto conversion = AddressDto.builder()
@@ -167,7 +170,7 @@ public class PatientServiceImpl implements PatientService {
         return null;
     }
 
-    private PersonalDetailDto buildPersonalDetailDto(Optional<PersonalDetail> personalDetail) {
+    public static PersonalDetailDto buildPersonalDetailDto(Optional<PersonalDetail> personalDetail) {
         if (personalDetail.isPresent()) {
             PersonalDetail thePersonalDetail = personalDetail.get();
             PersonalDetailDto conversion = PersonalDetailDto.builder()
@@ -180,7 +183,7 @@ public class PatientServiceImpl implements PatientService {
         return null;
     }
 
-    private List<PatientNextOfKinDto> returnNextOfKinsDto(Optional<List<PatientNextOfKin>> nextOfKins) {
+    public static List<PatientNextOfKinDto> returnNextOfKinsDto(Optional<List<PatientNextOfKin>> nextOfKins) {
         List<PatientNextOfKinDto> theNextOfKinDtos = new ArrayList<>();
         if (nextOfKins.isPresent()) {
             if (nextOfKins.get().size() > 0) {
@@ -193,7 +196,7 @@ public class PatientServiceImpl implements PatientService {
         return theNextOfKinDtos;
     }
 
-    private PatientNextOfKinDto buildPatientNextOfKinDto(PatientNextOfKin patientNextOfKin) {
+    public static PatientNextOfKinDto buildPatientNextOfKinDto(PatientNextOfKin patientNextOfKin) {
         PatientNextOfKinDto conversion = PatientNextOfKinDto.builder()
                 .first_name(patientNextOfKin.getPerson().getFirstName())
                 .last_name(patientNextOfKin.getPerson().getLastName())
@@ -203,4 +206,5 @@ public class PatientServiceImpl implements PatientService {
 
         return conversion;
     }
+
 }

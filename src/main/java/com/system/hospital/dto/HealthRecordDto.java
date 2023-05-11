@@ -8,9 +8,6 @@ import lombok.Builder;
 import java.time.OffsetDateTime;
 @Builder
 public record HealthRecordDto(
-        OffsetDateTime time,
-        String note,
-        Patient patient,
-        Doctor doctor
+        String note
 ) {
 }

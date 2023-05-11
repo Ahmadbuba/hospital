@@ -2,8 +2,11 @@ package com.system.hospital.model;
 
 
 
+import com.system.hospital.dto.PersonalDetailDto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Optional;
 
 @Entity
 @Table(name="personal_detail")
@@ -23,4 +26,16 @@ public class PersonalDetail {
 	
 	@Column(name="genotype")
 	private String genoType;
+
+	void updatePersonalDetail (Optional<PersonalDetailDto> personalDetailDto) {
+		if (personalDetailDto.isPresent()) {
+			PersonalDetailDto thePersonalDetailDto = personalDetailDto.get();
+			Optional.ofNullable(thePersonalDetailDto.weight())
+							.ifPresent(theWeight -> this.weight = thePersonalDetailDto.weight());
+			Optional.ofNullable(thePersonalDetailDto.bloodGroup())
+							.ifPresent(theBloodGroup -> this.bloodGroup = thePersonalDetailDto.bloodGroup());
+			Optional.ofNullable(thePersonalDetailDto.genoType())
+					.ifPresent(theGenotype -> this.genoType = thePersonalDetailDto.genoType());
+		}
+	}
 }

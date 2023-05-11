@@ -5,8 +5,10 @@ import com.system.hospital.constraint.ValueOfEnum;
 import com.system.hospital.jackson.CustomDeserializer;
 import com.system.hospital.model.Gender;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
-public record NextOfKinDto(
+@Builder
+public record PatientNextOfKinDto(
         @NotBlank @JsonDeserialize(using = CustomDeserializer.class)
         String first_name,
         @JsonDeserialize(using = CustomDeserializer.class)

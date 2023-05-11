@@ -1,10 +1,18 @@
 package com.system.hospital.model;
 
+import com.system.hospital.dto.AddressDto;
+import com.system.hospital.dto.PatientNextOfKinDto;
+import com.system.hospital.dto.PersonDto;
+import com.system.hospital.service.UtilityService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="patient_next_of_kin")
@@ -35,4 +43,10 @@ public class PatientNextOfKin {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patient;
+
+    void updateNextOfKinPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+
 }

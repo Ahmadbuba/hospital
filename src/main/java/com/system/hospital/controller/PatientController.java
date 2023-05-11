@@ -1,6 +1,7 @@
 package com.system.hospital.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.system.hospital.dto.AddressDto;
 import com.system.hospital.dto.PatientDto;
@@ -32,15 +33,14 @@ public class PatientController {
 	private final PatientRepository patientRepository;
 
 	@PostMapping("/patients")
-	public ResponseEntity<String> createPatient(@Valid @RequestBody PatientDto patientDto) {
-		patientService.createPatient(patientDto);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<Long> createPatient(@Valid @RequestBody PatientDto patientDto) {
+		return new ResponseEntity<>(patientService.createPatient(patientDto), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/patients")
-	public ResponseEntity<List<Patient>> getPatients(@RequestParam(required = false) String firstName) {
+	public ResponseEntity<List<PatientResponse>> getPatients(@RequestParam(required = false) String firstName) {
 //		List<PatientResponseDto> patients = patientService.getAllPatients(Optional.ofNullable(firstName));
-		List<Patient> patients = patientRepository.findAll();
+		List<PatientResponse> patients = patientService.getAllPatients(Optional.ofNullable(firstName));
 
 		
 		if(patients.isEmpty()) {
@@ -56,7 +56,7 @@ public class PatientController {
 	}
 	
 	@PutMapping("/patients/{id}")
-	public ResponseEntity<PatientResponse> updatePatient(@PathVariable("id") long id, @Valid @RequestBody PatientDto patientDto, BindingResult bindingResult) {
+	public ResponseEntity<Long> updatePatient(@PathVariable("id") long id, @Valid @RequestBody PatientDto patientDto, BindingResult bindingResult) {
 		return new ResponseEntity<>(patientService.updatePatient(patientDto,id), HttpStatus.OK);
 	}
 	
