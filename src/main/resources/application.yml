@@ -25,3 +25,4 @@ spring:
     mapper:
       ALLOW_COERCION_OF_SCALARS: false
 
+

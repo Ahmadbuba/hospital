@@ -21,6 +21,19 @@ public class Address {
 
     private String state;
 
+    public static Address getInstance(Optional<Address> address) {
+        if (address.isPresent()) {
+            Address theAddress = address.get();
+            Address conversion = Address.builder()
+                    .houseNumber(Optional.ofNullable(theAddress.getHouseNumber()).isPresent() ? theAddress.getHouseNumber() : null)
+                    .street(Optional.ofNullable(theAddress.getStreet()).isPresent() ? theAddress.getStreet() : null)
+                    .state(Optional.ofNullable(theAddress.getState()).isPresent() ? theAddress.getState(): null)
+                    .build();
+            return conversion;
+        }
+        return null;
+    }
+
     void updateAddress(AddressDto addressDto) {
             Optional.ofNullable(addressDto.houseNumber())
                     .map(theHouseNumber -> this.houseNumber = addressDto.houseNumber())

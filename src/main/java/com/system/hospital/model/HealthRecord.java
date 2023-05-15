@@ -10,9 +10,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table( name="health_record")
+@Table(name="health_record")
 @Builder
-@Data @NoArgsConstructor @AllArgsConstructor
+@Getter @NoArgsConstructor @AllArgsConstructor
 public class HealthRecord {
 	
 	@Id

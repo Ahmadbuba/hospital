@@ -3,11 +3,13 @@ package com.system.hospital.service.impl;
 import com.system.hospital.dto.*;
 import com.system.hospital.exception.ResourceNotFoundException;
 import com.system.hospital.model.*;
+import com.system.hospital.repository.PatientNextOfKinRepository;
 import com.system.hospital.repository.PatientRepository;
 import com.system.hospital.service.PatientService;
 import com.system.hospital.service.UtilityService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,11 +17,17 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class PatientServiceImpl implements PatientService {
-    private PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
+    private final  PatientNextOfKinRepository patientNextOfKinRepository;
     @Override
+    @Transactional
     public long createPatient(PatientDto patientDto) {
         Patient patient = UtilityService.convertPatientDtoToPatient(patientDto);
         patientRepository.save(patient);
+        for (PatientNextOfKin patientNextOfKin : patient.getPatientNextOfKinList()) {
+            patientNextOfKin.updateNextOfKinPatient(patient);
+            patientNextOfKinRepository.save(patientNextOfKin);
+        }
         return patient.getId();
     }
     @Override
@@ -47,6 +55,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public long updatePatient(PatientDto patientDto, long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
@@ -56,6 +65,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public void deletePatient(long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));

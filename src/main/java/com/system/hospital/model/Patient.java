@@ -1,5 +1,7 @@
 package com.system.hospital.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.system.hospital.dto.AddressDto;
 import com.system.hospital.dto.PatientDto;
 import com.system.hospital.dto.PatientNextOfKinDto;
@@ -8,6 +10,7 @@ import com.system.hospital.service.UtilityService;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +48,7 @@ public class Patient {
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "personal_detail_id")
+    @JsonIgnore
     private PersonalDetail personalDetail;
 
     @OneToMany(
@@ -52,6 +56,7 @@ public class Patient {
             fetch = FetchType.LAZY,
             mappedBy = "patient"
     )
+    @JsonIgnore
     private List<PatientNextOfKin> patientNextOfKinList;
 
     @OneToMany(
@@ -59,6 +64,7 @@ public class Patient {
             mappedBy = "patient",
             cascade = CascadeType.ALL
     )
+    @JsonIgnore
     private List<HealthRecord> records;
 
     public void updatePatient(PatientDto patientDto) {
@@ -89,5 +95,15 @@ public class Patient {
         }
 
     }
+
+    public void setNextOfKins(List<PatientNextOfKin> theList) {
+        if (patientNextOfKinList == null) {
+            patientNextOfKinList = new ArrayList<>();
+        }
+        for (PatientNextOfKin patientNextOfKin : theList) {
+            patientNextOfKinList.add(patientNextOfKin);
+        }
+    }
+
 
 }

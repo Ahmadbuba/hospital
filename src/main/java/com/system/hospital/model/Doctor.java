@@ -1,5 +1,6 @@
 package com.system.hospital.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,12 +47,12 @@ public class Doctor {
 				mappedBy="doctor",
 				fetch = FetchType.LAZY
 	)
-	private List<HealthRecord> healthRecords;
+	private List<HealthRecord> healthRecords = new ArrayList<>();
 
 	@OneToMany(
 			cascade = CascadeType.ALL,
 			fetch = FetchType.LAZY,
 			mappedBy = "doctor"
 	)
-	private List<DoctorNextOfKin> doctorNextOfKins;
+	private List<DoctorNextOfKin> doctorNextOfKins = new ArrayList<>();
 }

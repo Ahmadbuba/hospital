@@ -39,14 +39,10 @@ public class PatientController {
 
 	@GetMapping("/patients")
 	public ResponseEntity<List<PatientResponse>> getPatients(@RequestParam(required = false) String firstName) {
-//		List<PatientResponseDto> patients = patientService.getAllPatients(Optional.ofNullable(firstName));
 		List<PatientResponse> patients = patientService.getAllPatients(Optional.ofNullable(firstName));
-
-		
 		if(patients.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
 	
@@ -56,7 +52,7 @@ public class PatientController {
 	}
 	
 	@PutMapping("/patients/{id}")
-	public ResponseEntity<Long> updatePatient(@PathVariable("id") long id, @Valid @RequestBody PatientDto patientDto, BindingResult bindingResult) {
+	public ResponseEntity<Long> updatePatient(@PathVariable("id") long id, @Valid @RequestBody PatientDto patientDto) {
 		return new ResponseEntity<>(patientService.updatePatient(patientDto,id), HttpStatus.OK);
 	}
 	

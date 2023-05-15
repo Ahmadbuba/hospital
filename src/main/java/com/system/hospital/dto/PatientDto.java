@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
