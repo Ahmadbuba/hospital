@@ -32,26 +32,26 @@ public class PatientServiceImpl implements PatientService {
     }
     @Override
     public List<PatientResponse> getAllPatients(Optional<String> firstName) {
-        List <Patient> thePatients = new ArrayList<>();
         List<PatientResponse> conversions = new ArrayList<>();
-        if (!firstName.isPresent()) {
-            thePatients = patientRepository.findAll();
-        } else thePatients = patientRepository.findByPersonFirstName(firstName.get());
+        String searchName = firstName.isPresent()? firstName.get() : null;
+        List<Patient> thePatients = Optional.ofNullable(searchName)
+                .filter(theSearchName -> searchName!=null)
+                .map(theSearchName -> patientRepository.findByPersonFirstName(searchName))
+                .orElse(patientRepository.findAll());
 
         if (!thePatients.isEmpty()) {
             conversions = thePatients.stream()
-                    .map(patient -> UtilityService.convertFromPatientToPatientDto(patient))
+                    .map(patient -> UtilityService.convertFromPatientToPatientResponse(patient))
                     .collect(Collectors.toList());
         }
         return conversions;
-
     }
 
     @Override
     public PatientResponse getPatientById(long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-        return UtilityService.convertFromPatientToPatientDto(patient);
+        return UtilityService.convertFromPatientToPatientResponse(patient);
     }
 
     @Override

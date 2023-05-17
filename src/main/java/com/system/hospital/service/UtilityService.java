@@ -52,17 +52,53 @@ public class UtilityService {
         return thePatient;
     }
 
+    public static PatientResponse convertFromPatientToPatientResponse(Patient patient) {
+        PatientResponse patientResponse = PatientResponse.builder()
+                .id(patient.getId())
+                .firstName(patient.getPerson().getFirstName())
+                .lastName(patient.getPerson().getLastName())
+                .gender(getGenderString(patient.getPerson().getGender()))
+                .address(buildAddressDto(Optional.ofNullable(patient.getAddress())))
+                .details(buildPersonalDetailDto(Optional.ofNullable(patient.getPersonalDetail())))
+                .next_of_kins(returnNextOfKinsResponse(Optional.ofNullable(patient.getPatientNextOfKinList())))
+                .build();
+        return patientResponse;
+    }
     public static Address buildAddress(Optional<AddressDto> addressDto) {
         if (addressDto.isPresent()) {
             AddressDto theAddressDto = addressDto.get();
             Address conversion = Address.builder()
-                    .houseNumber(Optional.ofNullable(theAddressDto.houseNumber()).isPresent() ? theAddressDto.houseNumber() : null)
+                    .houseNumber(Optional.ofNullable(theAddressDto.houseNumber()).isPresent() ? theAddressDto.houseNumber() : 0)
                     .street(Optional.ofNullable(theAddressDto.street()).isPresent() ? theAddressDto.street() : null)
                     .state(Optional.ofNullable(theAddressDto.state()).isPresent() ? theAddressDto.state(): null)
                     .build();
             return conversion;
         }
         return null;
+    }
+
+    public static AddressDto buildAddressDto(Optional<Address> address) {
+//        if (address.isPresent()) {
+//            Address theAddress = address.get();
+//            AddressDto conversion = AddressDto.builder()
+//                    .houseNumber(theAddress.getHouseNumber())
+//                    .street(theAddress.getStreet())
+//                    .state(theAddress.getState())
+//                    .build();
+//            return conversion;
+//        }
+//        return null;
+       Address myAddress = address.isPresent()? address.get() : null;
+       return Optional.ofNullable(myAddress)
+               .filter(theAddress -> myAddress != null)
+               .map(theAddress -> {
+                   return AddressDto.builder()
+                           .houseNumber(theAddress.getHouseNumber())
+                           .street(theAddress.getStreet())
+                           .state(theAddress.getState())
+                           .build();
+               })
+               .orElse(null);
     }
 
     public static PersonalDetail buildPersonalDetail(Optional<PersonalDetailDto> personalDetailDto) {
@@ -142,32 +178,6 @@ public class UtilityService {
                 .lastName(lastName)
                 .gender(gender)
                 .build();
-    }
-
-    public static PatientResponse convertFromPatientToPatientDto(Patient patient) {
-        PatientResponse patientResponse = PatientResponse.builder()
-                .id(patient.getId())
-                .firstName(patient.getPerson().getFirstName())
-                .lastName(patient.getPerson().getLastName())
-                .gender(getGenderString(patient.getPerson().getGender()))
-                .address(buildAddressDto(Optional.ofNullable(patient.getAddress())))
-                .details(buildPersonalDetailDto(Optional.ofNullable(patient.getPersonalDetail())))
-                .next_of_kins(returnNextOfKinsResponse(Optional.ofNullable(patient.getPatientNextOfKinList())))
-                .build();
-        return patientResponse;
-    }
-
-    public static AddressDto buildAddressDto(Optional<Address> address) {
-        if (address.isPresent()) {
-            Address theAddress = address.get();
-            AddressDto conversion = AddressDto.builder()
-                    .houseNumber(theAddress.getHouseNumber())
-                    .street(theAddress.getStreet())
-                    .state(theAddress.getState())
-                    .build();
-            return conversion;
-        }
-        return null;
     }
 
     public static PersonalDetailDto buildPersonalDetailDto(Optional<PersonalDetail> personalDetail) {

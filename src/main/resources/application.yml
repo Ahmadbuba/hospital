@@ -24,5 +24,7 @@ spring:
   jackson:
     mapper:
       ALLOW_COERCION_OF_SCALARS: false
+  profiles:
+    active: testing
 
 
