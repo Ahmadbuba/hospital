@@ -3,6 +3,7 @@ package com.system.hospital.repository;
 import com.system.hospital.HospitalApplication;
 import com.system.hospital.model.*;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = HospitalApplication.class, properties = "spring.profiles.active=testing")
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@DataJpaTest
 class PatientRepositoryTest {
     @Autowired
     private PatientRepository patientRepository;
 
+    @BeforeEach
+    void tearDown() {
+        patientRepository.deleteAll();
+    }
     @Test
     public void getAllPatientsWherePersonFirstNameContaining() {
 
