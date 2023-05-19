@@ -29,8 +29,6 @@ class PatientRepositoryTest {
 
     @Autowired
     private PatientRepository patientRepository;
-    @Autowired
-    private PostgreSQLContainer postgresqlContainer;
 
     @AfterEach
     void tearDown() {
