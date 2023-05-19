@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:h2://mem:db;DB_CLOSE_DELAY=-1
+    image: postgres:11.1
+    name: postgresql
+    exposedPorts:
+      - 5433
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:11.1:///integration-tests-db
     username: sa
     password: sa
-    driver-class-name: org.h2.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,6 +15,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: false
