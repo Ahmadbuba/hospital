@@ -2,8 +2,6 @@ package com.system.hospital.service;
 
 import com.system.hospital.dto.*;
 import com.system.hospital.model.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
