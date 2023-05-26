@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.Optional;
 
 @Embeddable
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Person {
     @NotBlank(message = "First name cannot be empty")
     private String firstName;
@@ -21,10 +21,14 @@ public class Person {
     private Gender gender;
 
     void updatePerson(PersonDto personDto) {
-        this.firstName = personDto.firstName();
+        Optional.ofNullable(personDto.firstName())
+                .map(firstName -> this.firstName = personDto.firstName())
+                .orElse(this.firstName);
         Optional.ofNullable(personDto.lastName())
                 .map(lastName -> this.lastName = personDto.lastName())
                 .orElse(this.lastName);
-        this.gender = personDto.gender();
+        Optional.ofNullable(personDto.gender())
+                .map(gender -> this.gender = personDto.gender())
+                .orElse(this.gender);
     }
 }

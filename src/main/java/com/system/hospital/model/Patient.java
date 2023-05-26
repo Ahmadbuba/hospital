@@ -2,10 +2,7 @@ package com.system.hospital.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.system.hospital.dto.AddressDto;
-import com.system.hospital.dto.PatientDto;
-import com.system.hospital.dto.PatientNextOfKinDto;
-import com.system.hospital.dto.PersonDto;
+import com.system.hospital.dto.*;
 import com.system.hospital.service.UtilityService;
 import jakarta.persistence.*;
 import lombok.*;
@@ -69,18 +66,28 @@ public class Patient {
 
     public void updatePatient(PatientDto patientDto) {
         this.person.updatePerson(UtilityService.buildPersonDto(patientDto));
-        this.updateTheAddress(Optional.ofNullable(this.address),Optional.ofNullable(patientDto.address()));
-        this.personalDetail.updatePersonalDetail(Optional.ofNullable(patientDto.personal_details()));
+        this.updateTheAddress(Optional.ofNullable(patientDto.address()));
+        this.thePersonalDetail(Optional.ofNullable(patientDto.personal_details()));
         this.updateTheKins(Optional.ofNullable(patientDto.next_of_kins()));
     }
 
-   private void updateTheAddress(Optional<Address> myAddress, Optional<AddressDto> myAddressDto) {
-        myAddress.ifPresent(add -> {
-            if (myAddress.isPresent()) {
-                AddressDto theAdd = myAddressDto.get();
-                this.address.updateAddress(theAdd);
+   private void updateTheAddress(Optional<AddressDto> myAddressDto) {
+        myAddressDto.ifPresent(add -> {
+            AddressDto addressDto = myAddressDto.get();
+            if (this.address != null) {
+                this.address.updateAddress(addressDto);
+            } else  {
+                this.address = UtilityService.buildAddress(myAddressDto);
             }
         });
+    }
+
+    private void thePersonalDetail(Optional<PersonalDetailDto> thePersonalDetail) {
+        if (this.personalDetail != null) {
+            this.personalDetail.updatePersonalDetail(thePersonalDetail);
+        } else  {
+            this.personalDetail = UtilityService.buildPersonalDetail(thePersonalDetail);
+        }
     }
 
     private void updateTheKins(Optional<List<PatientNextOfKinDto>> patientNextOfKinDtoList) {

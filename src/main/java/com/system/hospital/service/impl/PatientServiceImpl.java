@@ -24,29 +24,20 @@ public class PatientServiceImpl implements PatientService {
     public long createPatient(PatientDto patientDto) {
         Patient patient = UtilityService.convertPatientDtoToPatient(patientDto);
         patientRepository.save(patient);
-        for (PatientNextOfKin patientNextOfKin : patient.getPatientNextOfKinList()) {
-            patientNextOfKin.updateNextOfKinPatient(patient);
-            patientNextOfKinRepository.save(patientNextOfKin);
+        if (patient.getPatientNextOfKinList().size() > 0) {
+            for (PatientNextOfKin patientNextOfKin : patient.getPatientNextOfKinList()) {
+                patientNextOfKin.updateNextOfKinPatient(patient);
+                patientNextOfKinRepository.save(patientNextOfKin);
+            }
         }
         return patient.getId();
     }
     @Override
     public List<PatientResponse> getAllPatients(Optional<String> firstName) {
-        List<PatientResponse> conversions = new ArrayList<>();
-        String searchName = firstName.isPresent()? firstName.get() : null;
-        List<Patient> thePatients = Optional.ofNullable(searchName)
-                .filter(theSearchName -> searchName!=null)
-                .map(theSearchName -> patientRepository.findByPersonFirstName(searchName))
-                .orElse(patientRepository.findAll());
-
-        if (!thePatients.isEmpty()) {
-            conversions = thePatients.stream()
-                    .map(patient -> UtilityService.convertFromPatientToPatientResponse(patient))
-                    .collect(Collectors.toList());
-        }
-        return conversions;
+        String searchName = firstName.orElse(null);
+        List<Patient> thePatients = searchName == null ? findAllPatients() : findPatientsByFirstName(searchName);
+        return convertToPatientResponses(thePatients);
     }
-
     @Override
     public PatientResponse getPatientById(long id) {
         Patient patient = patientRepository.findById(id)
@@ -70,6 +61,20 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
         patientRepository.delete(patient);
+    }
+
+    private List<Patient> findAllPatients() {
+        return patientRepository.findAll();
+    }
+
+    private List<Patient> findPatientsByFirstName(String firstName) {
+        return patientRepository.findByPersonFirstName(firstName);
+    }
+
+    private List<PatientResponse> convertToPatientResponses(List<Patient> patients) {
+        return patients.stream()
+                .map(patient -> UtilityService.convertFromPatientToPatientResponse(patient))
+                .collect(Collectors.toList());
     }
 
 }

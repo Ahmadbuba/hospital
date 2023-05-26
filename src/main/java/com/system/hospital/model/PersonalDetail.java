@@ -27,7 +27,7 @@ public class PersonalDetail {
 	@Column(name="genotype")
 	private String genoType;
 
-	void updatePersonalDetail (Optional<PersonalDetailDto> personalDetailDto) {
+	public void updatePersonalDetail (Optional<PersonalDetailDto> personalDetailDto) {
 		if (personalDetailDto.isPresent()) {
 			PersonalDetailDto thePersonalDetailDto = personalDetailDto.get();
 			Optional.ofNullable(thePersonalDetailDto.weight())
