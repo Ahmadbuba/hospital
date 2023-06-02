@@ -20,15 +20,14 @@ public class Person {
     @NonNull
     private Gender gender;
 
-    void updatePerson(PersonDto personDto) {
-        Optional.ofNullable(personDto.firstName())
-                .map(firstName -> this.firstName = personDto.firstName())
-                .orElse(this.firstName);
-        Optional.ofNullable(personDto.lastName())
-                .map(lastName -> this.lastName = personDto.lastName())
-                .orElse(this.lastName);
-        Optional.ofNullable(personDto.gender())
-                .map(gender -> this.gender = personDto.gender())
-                .orElse(this.gender);
+
+   public void updatePerson(String theFirstName, Optional<String> theLastName, String theGender) {
+       theLastName.ifPresent(lName -> this.lastName = lName);
+       this.firstName = theFirstName;
+       this.gender = buildGender(theGender);
+    }
+
+    private Gender buildGender(String theGender) {
+       return theGender.equalsIgnoreCase("Male") ? Gender.MALE : Gender.FEMALE;
     }
 }

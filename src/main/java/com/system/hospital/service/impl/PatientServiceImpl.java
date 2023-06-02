@@ -8,21 +8,26 @@ import com.system.hospital.repository.PatientRepository;
 import com.system.hospital.service.PatientService;
 import com.system.hospital.service.UtilityService;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 @Service
 @AllArgsConstructor
 public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
-    private final  PatientNextOfKinRepository patientNextOfKinRepository;
+    private final PatientNextOfKinRepository patientNextOfKinRepository;
+    private final UtilityService utilityService;
     @Override
     @Transactional
     public long createPatient(PatientDto patientDto) {
-        Patient patient = UtilityService.convertPatientDtoToPatient(patientDto);
+        Patient patient = utilityService.convertPatientDtoToPatient(patientDto);
         patientRepository.save(patient);
         if (patient.getPatientNextOfKinList().size() > 0) {
             for (PatientNextOfKin patientNextOfKin : patient.getPatientNextOfKinList()) {
@@ -42,7 +47,7 @@ public class PatientServiceImpl implements PatientService {
     public PatientResponse getPatientById(long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
-        return UtilityService.convertFromPatientToPatientResponse(patient);
+        return utilityService.convertFromPatientToPatientResponse(patient);
     }
 
     @Override
@@ -50,6 +55,11 @@ public class PatientServiceImpl implements PatientService {
     public long updatePatient(PatientDto patientDto, long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
+
+        if (patientDto.next_of_kins() != null && patientDto.next_of_kins().size() > 0) {
+            patientNextOfKinRepository.deleteAll(patient.getPatientNextOfKinList());
+            patient.setPatientNextOfKinListNull();
+        }
         patient.updatePatient(patientDto);
         patientRepository.save(patient);
         return patient.getId();
@@ -73,7 +83,7 @@ public class PatientServiceImpl implements PatientService {
 
     private List<PatientResponse> convertToPatientResponses(List<Patient> patients) {
         return patients.stream()
-                .map(patient -> UtilityService.convertFromPatientToPatientResponse(patient))
+                .map(patient -> utilityService.convertFromPatientToPatientResponse(patient))
                 .collect(Collectors.toList());
     }
 

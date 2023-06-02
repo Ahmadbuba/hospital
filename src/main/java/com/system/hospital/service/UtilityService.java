@@ -2,45 +2,47 @@ package com.system.hospital.service;
 
 import com.system.hospital.dto.*;
 import com.system.hospital.model.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@NoArgsConstructor
 public class UtilityService {
 
-    public static Gender getGenderEnum(String theGender) {
+    public static UtilityService getInstance() {
+        return new UtilityService();
+    }
+
+    public Gender getGenderEnum(String theGender) {
             return theGender.equalsIgnoreCase("Male") ? Gender.MALE : Gender.FEMALE;
     }
 
-   public static String getGenderString(Gender theGender) {
+   public String getGenderString(Gender theGender) {
         return theGender.toString();
     }
-    public static String getString(Optional<String> theString) {
+    public String getString(Optional<String> theString) {
         return theString.isPresent() ? theString.get() : null;
     }
 
-    public static Patient convertPatientDtoToPatient(PatientDto patientDto) {
+    public Patient convertPatientDtoToPatient(PatientDto patientDto) {
         Person thePerson = buildPerson(
                 patientDto.first_name(),
-                getString(Optional.ofNullable(patientDto.last_name())),
-                getGenderEnum(patientDto.gender())
+                Optional.ofNullable(patientDto.last_name()),
+                patientDto.gender()
         );
 
-        Address theAddress = buildAddress(
-                Optional.ofNullable(patientDto.address())
-        );
+        Address theAddress = addressBuilder(Optional.ofNullable(patientDto.address()));
 
-        PersonalDetail thePersonalDetail = buildPersonalDetail(
-                Optional.ofNullable(patientDto.personal_details())
-        );
+        PersonalDetail thePersonalDetail = personalDetailBuilder(Optional.ofNullable(patientDto.personal_details()));
 
-        List<PatientNextOfKin> theNextOfKins = returnNextOfKins(
-                Optional.ofNullable(patientDto.next_of_kins())
-        );
+        List<PatientNextOfKin> theNextOfKins = buildPatientNextOfKinList(Optional.ofNullable(patientDto.next_of_kins()));
         Patient thePatient = Patient.builder()
                 .person(thePerson)
                 .address(theAddress)
@@ -50,7 +52,7 @@ public class UtilityService {
         return thePatient;
     }
 
-    public static PatientResponse convertFromPatientToPatientResponse(Patient patient) {
+    public PatientResponse convertFromPatientToPatientResponse(Patient patient) {
         PatientResponse patientResponse = PatientResponse.builder()
                 .id(patient.getId())
                 .firstName(patient.getPerson().getFirstName())
@@ -62,20 +64,16 @@ public class UtilityService {
                 .build();
         return patientResponse;
     }
-    public static Address buildAddress(Optional<AddressDto> addressDto) {
-        if (addressDto.isPresent()) {
-            AddressDto theAddressDto = addressDto.get();
+    public Address buildAddress(AddressDto addressDto) {
             Address conversion = Address.builder()
-                    .houseNumber(Optional.ofNullable(theAddressDto.houseNumber()).isPresent() ? theAddressDto.houseNumber() : 0)
-                    .street(Optional.ofNullable(theAddressDto.street()).isPresent() ? theAddressDto.street() : null)
-                    .state(Optional.ofNullable(theAddressDto.state()).isPresent() ? theAddressDto.state(): null)
+                    .houseNumber(Optional.ofNullable(addressDto.houseNumber()).orElse(0))
+                    .street(Optional.ofNullable(addressDto.street()).orElse(null))
+                    .state(Optional.ofNullable(addressDto.state()).orElse(null))
                     .build();
             return conversion;
-        }
-        return null;
     }
 
-    public static AddressDto buildAddressDto(Optional<Address> address) {
+    public AddressDto buildAddressDto(Optional<Address> address) {
 //        if (address.isPresent()) {
 //            Address theAddress = address.get();
 //            AddressDto conversion = AddressDto.builder()
@@ -99,86 +97,82 @@ public class UtilityService {
                .orElse(null);
     }
 
-    public static PersonalDetail buildPersonalDetail(Optional<PersonalDetailDto> personalDetailDto) {
-        if(personalDetailDto.isPresent()) {
-            PersonalDetailDto thePersonalDetail = personalDetailDto.get();
+    public PersonalDetail buildPersonalDetail(PersonalDetailDto personalDetailDto) {
             PersonalDetail conversion = PersonalDetail.builder()
-                    .weight(thePersonalDetail.weight())
-                    .bloodGroup(getString(Optional.ofNullable(thePersonalDetail.bloodGroup())))
-                    .genoType(getString(Optional.ofNullable(thePersonalDetail.genoType())))
+                    .weight(personalDetailDto.weight())
+                    .bloodGroup(getString(Optional.ofNullable(personalDetailDto.bloodGroup())))
+                    .genoType(getString(Optional.ofNullable(personalDetailDto.genoType())))
                     .build();
             return conversion;
-        }
-        return null;
     }
 
-    public static List<PatientNextOfKin> returnNextOfKins(Optional<List<PatientNextOfKinDto>> nextOfKinDtos) {
-        List<PatientNextOfKin> theNextOfKins = new ArrayList<>();
-        if (nextOfKinDtos.isPresent()) {
-            if (nextOfKinDtos.get().size() > 0) {
-                theNextOfKins = nextOfKinDtos.get().stream()
-                        .map(dto -> buildPatientNextOfKin(dto))
-                        .collect(Collectors.toList());
-
-            }
-        }
-        return theNextOfKins;
+    public List<PatientNextOfKin> returnNextOfKins(List<PatientNextOfKinDto> nextOfKinDtos) {
+        return nextOfKinDtos.stream()
+                .map(nextOfKinDto -> buildPatientNextOfKin(nextOfKinDto))
+                .collect(Collectors.toList());
     }
 
-    public static PatientNextOfKin buildPatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
+    public PatientNextOfKin buildPatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
         return PatientNextOfKin.builder()
                 .person(
                         buildPerson(
                                 patientNextOfKinDto.first_name(),
-                                getString(Optional.ofNullable(patientNextOfKinDto.last_name())),
-                                getGenderEnum(patientNextOfKinDto.gender())
+                                Optional.ofNullable(patientNextOfKinDto.last_name()),
+                                patientNextOfKinDto.gender()
                         )
                 )
                 .address(
-                        buildAddress(
+                        addressBuilder(
                                 Optional.ofNullable(patientNextOfKinDto.address()
                                 ))
                 )
                 .build();
     }
 
-    public static PersonDto buildPersonDto(PatientDto patientDto) {
+    public PersonDto buildPersonDto(PatientDto patientDto) {
        return PersonDto.builder()
                 .firstName(patientDto.first_name())
                 .lastName(getString(Optional.ofNullable(patientDto.last_name())))
-                .gender(getGenderEnum(patientDto.gender()))
+                //.gender(getGenderEnum(patientDto.gender()))
                 .build();
     }
 
-    public static PatientNextOfKin convertToNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
+    public PatientNextOfKin convertToNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
         Address theAddress = Optional.ofNullable(patientNextOfKinDto.address())
-                .map(pNXKAddress -> buildAddress(Optional.ofNullable(patientNextOfKinDto.address())))
+                .map(pNXKAddress -> addressBuilder(Optional.ofNullable(patientNextOfKinDto.address())))
                 .orElse(null);
         PersonDto personDto = PersonDto.builder()
                 .firstName(patientNextOfKinDto.first_name())
                 .lastName(getString(Optional.ofNullable(patientNextOfKinDto.last_name())))
-                .gender(getGenderEnum(patientNextOfKinDto.gender()))
+                //.gender(getGenderEnum(patientNextOfKinDto.gender()))
                 .build();
         PatientNextOfKin theKin = PatientNextOfKin.builder()
                 .address(theAddress)
                 .person(Person.builder()
                         .firstName(personDto.firstName())
                         .lastName(personDto.lastName())
-                        .gender(personDto.gender())
+                       // .gender(personDto.gender())
                         .build())
                 .build();
         return theKin;
     }
 
-    public static Person buildPerson (String firstName, String lastName, Gender gender) {
+    public Person buildPerson (String firstName, Optional<String> lastName, String gender) {
+        String theLastName;
+        if (lastName.isPresent()) {
+            theLastName = lastName.get();
+        } else {
+            theLastName = null;
+        }
+        Gender theGender = getGenderEnum(gender);
         return Person.builder()
                 .firstName(firstName)
-                .lastName(lastName)
-                .gender(gender)
+                .lastName(theLastName)
+                .gender(theGender)
                 .build();
     }
 
-    public static PersonalDetailDto buildPersonalDetailDto(Optional<PersonalDetail> personalDetail) {
+    public PersonalDetailDto buildPersonalDetailDto(Optional<PersonalDetail> personalDetail) {
         if (personalDetail.isPresent()) {
             PersonalDetail thePersonalDetail = personalDetail.get();
             PersonalDetailDto conversion = PersonalDetailDto.builder()
@@ -191,7 +185,7 @@ public class UtilityService {
         return null;
     }
 
-    public static List<PatientNextOfKinDto> returnNextOfKinsDto(Optional<List<PatientNextOfKin>> nextOfKins) {
+    public List<PatientNextOfKinDto> returnNextOfKinsDto(Optional<List<PatientNextOfKin>> nextOfKins) {
         List<PatientNextOfKinDto> theNextOfKinDtos = new ArrayList<>();
         if (nextOfKins.isPresent()) {
             if (nextOfKins.get().size() > 0) {
@@ -204,7 +198,7 @@ public class UtilityService {
         return theNextOfKinDtos;
     }
 
-    public static PatientNextOfKinDto buildPatientNextOfKinDto(PatientNextOfKin patientNextOfKin) {
+    public PatientNextOfKinDto buildPatientNextOfKinDto(PatientNextOfKin patientNextOfKin) {
         return PatientNextOfKinDto.builder()
                 .first_name(patientNextOfKin.getPerson().getFirstName())
                 .last_name(getString(Optional.ofNullable(patientNextOfKin.getPerson().getLastName())))
@@ -213,7 +207,7 @@ public class UtilityService {
                 .build();
     }
 
-    public static List<PatientNextOfKinResponse> returnNextOfKinsResponse(Optional<List<PatientNextOfKin>> nextOfKins) {
+    public List<PatientNextOfKinResponse> returnNextOfKinsResponse(Optional<List<PatientNextOfKin>> nextOfKins) {
         List<PatientNextOfKinResponse> theNextOfKinResponse = new ArrayList<>();
         if (nextOfKins.isPresent()) {
             if (nextOfKins.get().size() > 0) {
@@ -226,7 +220,7 @@ public class UtilityService {
         return theNextOfKinResponse;
     }
 
-    public static PatientNextOfKinResponse buildPatientNextOfKinResponse (PatientNextOfKin patientNextOfKin) {
+    public PatientNextOfKinResponse buildPatientNextOfKinResponse (PatientNextOfKin patientNextOfKin) {
         return PatientNextOfKinResponse.builder()
                 .id(patientNextOfKin.getId())
                 .first_name(patientNextOfKin.getPerson().getFirstName())
@@ -234,5 +228,22 @@ public class UtilityService {
                 .gender(getGenderString(patientNextOfKin.getPerson().getGender()))
                 .address(buildAddressDto(Optional.ofNullable(patientNextOfKin.getAddress())))
                 .build();
+    }
+
+    private Address addressBuilder(Optional<AddressDto> myAddressDto) {
+        return myAddressDto
+                .map(addressDto -> buildAddress(addressDto))
+                .orElse(null);
+    }
+    private PersonalDetail personalDetailBuilder(Optional<PersonalDetailDto> myPersonalDetailDto) {
+        return myPersonalDetailDto
+                .map(personalDetailDto -> buildPersonalDetail(personalDetailDto))
+                .orElse(null);
+    }
+
+    private List<PatientNextOfKin> buildPatientNextOfKinList(Optional<List<PatientNextOfKinDto>> myNextOfKinDtoList) {
+        return myNextOfKinDtoList
+                .map(patientNextOfKinDtos -> returnNextOfKins(patientNextOfKinDtos))
+                .orElse(Collections.emptyList());
     }
 }

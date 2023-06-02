@@ -44,7 +44,7 @@ public class PatientServiceImplTest {
     @BeforeEach
     void setUp () {
         MockitoAnnotations.initMocks(this);
-        this.patientService = new PatientServiceImpl(patientRepository,patientNextOfKinRepository);
+        this.patientService = new PatientServiceImpl(patientRepository,patientNextOfKinRepository,utilityService);
     }
 
     @Test
@@ -146,5 +146,9 @@ public class PatientServiceImplTest {
 
 // Assert the returned patientId
 // Add any additional assertions as needed
+    }
+
+    public void test6() {
+        when(patientNextOfKinRepository.save(any(PatientNextOfKin.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
 }

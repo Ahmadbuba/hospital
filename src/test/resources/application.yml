@@ -1,16 +1,7 @@
 spring:
   datasource:
-    image: postgres:11.1
-    name: postgresql
-    exposedPorts:
-      - 5433
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:11.1:///integration-tests-db
-    username: sa
-    password: sa
+    url: jdbc:tc:postgresql:14.4:///integration-tests-db
   jpa:
-    hibernate:
-      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:

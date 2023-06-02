@@ -6,7 +6,6 @@ import lombok.Builder;
 @Builder
 public record PersonDto(
         String firstName,
-        String lastName,
-        Gender gender
+        String lastName
 ) {
 }

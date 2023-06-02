@@ -13,6 +13,6 @@ public record PersonalDetailDto(
         @JsonDeserialize(using = CustomDeserializer.class)
         String bloodGroup,
         @JsonDeserialize(using = CustomDeserializer.class)
-       String genoType
+        String genoType
 ) {
 }

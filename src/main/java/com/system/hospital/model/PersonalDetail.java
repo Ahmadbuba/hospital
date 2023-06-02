@@ -27,15 +27,14 @@ public class PersonalDetail {
 	@Column(name="genotype")
 	private String genoType;
 
-	public void updatePersonalDetail (Optional<PersonalDetailDto> personalDetailDto) {
-		if (personalDetailDto.isPresent()) {
-			PersonalDetailDto thePersonalDetailDto = personalDetailDto.get();
-			Optional.ofNullable(thePersonalDetailDto.weight())
-							.ifPresent(theWeight -> this.weight = thePersonalDetailDto.weight());
-			Optional.ofNullable(thePersonalDetailDto.bloodGroup())
-							.ifPresent(theBloodGroup -> this.bloodGroup = thePersonalDetailDto.bloodGroup());
-			Optional.ofNullable(thePersonalDetailDto.genoType())
-					.ifPresent(theGenotype -> this.genoType = thePersonalDetailDto.genoType());
-		}
+
+	void updatePersonalDetail(PersonalDetailDto personalDetailDto) {
+		this.weight = personalDetailDto.weight();
+		Optional.ofNullable(personalDetailDto.bloodGroup())
+				.map(bloodGroup -> this.bloodGroup = personalDetailDto.bloodGroup())
+				.orElse(this.bloodGroup);
+		Optional.ofNullable(personalDetailDto.genoType())
+				.map(genoType -> this.genoType = personalDetailDto.genoType())
+				.orElse(this.genoType);
 	}
 }

@@ -2,6 +2,7 @@ package com.system.hospital.service;
 
 import com.system.hospital.dto.PatientDto;
 import com.system.hospital.dto.PatientResponse;
+import com.system.hospital.dto.PatientUpdateDto;
 import com.system.hospital.model.Gender;
 
 import java.util.List;

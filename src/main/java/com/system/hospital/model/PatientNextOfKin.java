@@ -44,25 +44,18 @@ public class PatientNextOfKin {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
+    void updatePatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
+        this.person.updatePerson(patientNextOfKinDto.first_name(),Optional.ofNullable(patientNextOfKinDto.last_name()), patientNextOfKinDto.gender());
+        Optional.ofNullable(patientNextOfKinDto.address())
+                .ifPresent(address -> {
+                    var theAddress = Address.builder().build();
+                    theAddress.updateAddress(patientNextOfKinDto.address());
+                    this.address = theAddress;
+                });
+
+    }
     public void updateNextOfKinPatient(Patient patient) {
         this.patient = patient;
-    }
-
-    public static PatientNextOfKin getInstance(PatientNextOfKin patientNextOfKin) {
-        return PatientNextOfKin.builder()
-                .person(
-                        UtilityService.buildPerson(
-                                patientNextOfKin.person.getFirstName(),
-                                UtilityService.getString(Optional.ofNullable(patientNextOfKin.person.getLastName())),
-                                patientNextOfKin.person.getGender()
-                        )
-                )
-                .address(
-                        Address.getInstance(
-                                Optional.ofNullable(patientNextOfKin.getAddress())
-                        )
-                )
-                .build();
     }
 
 

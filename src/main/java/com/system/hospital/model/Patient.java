@@ -64,43 +64,86 @@ public class Patient {
     @JsonIgnore
     private List<HealthRecord> records;
 
+    public void updatePerson(Person thePerson) {
+        this.person = thePerson;
+    }
+
+    public void setPatientNextOfKinListNull() {
+        this.patientNextOfKinList = null;
+    }
     public void updatePatient(PatientDto patientDto) {
-        this.person.updatePerson(UtilityService.buildPersonDto(patientDto));
+        Person thePerson = Person.builder()
+                .gender(Gender.UNASSIGNED)
+                .build();
+        thePerson.updatePerson(
+                patientDto.first_name(),
+                Optional.ofNullable(patientDto.last_name()),
+                patientDto.gender()
+        );
+//        Person thePerson = UtilityService.getInstance()
+//                .buildPerson(
+//                        patientDto.first_name(),
+//                        Optional.ofNullable(patientDto.last_name()),
+//                        patientDto.gender()
+//                );
+        this.person = thePerson;
         this.updateTheAddress(Optional.ofNullable(patientDto.address()));
-        this.thePersonalDetail(Optional.ofNullable(patientDto.personal_details()));
+        this.updateThePersonalDetail(Optional.ofNullable(patientDto.personal_details()));
         this.updateTheKins(Optional.ofNullable(patientDto.next_of_kins()));
     }
 
    private void updateTheAddress(Optional<AddressDto> myAddressDto) {
-        myAddressDto.ifPresent(add -> {
-            AddressDto addressDto = myAddressDto.get();
+        myAddressDto.ifPresent(addressDto -> {
             if (this.address != null) {
                 this.address.updateAddress(addressDto);
             } else  {
-                this.address = UtilityService.buildAddress(myAddressDto);
+                this.address = Address.builder().build();
+                this.address.updateAddress(addressDto);
             }
         });
     }
 
-    private void thePersonalDetail(Optional<PersonalDetailDto> thePersonalDetail) {
-        if (this.personalDetail != null) {
-            this.personalDetail.updatePersonalDetail(thePersonalDetail);
-        } else  {
-            this.personalDetail = UtilityService.buildPersonalDetail(thePersonalDetail);
-        }
+//    private void thePersonalDetail(Optional<PersonalDetailDto> myPersonalDetail) {
+//        if (this.personalDetail != null) {
+//            this.personalDetail.updatePersonalDetail(thePersonalDetail);
+//        } else  {
+//            this.personalDetail = UtilityService.getInstance().buildPersonalDetail(thePersonalDetail);
+//        }
+//    }
+
+    private void updateThePersonalDetail(Optional<PersonalDetailDto> myPersonalDetail) {
+        myPersonalDetail.ifPresent(pDetail -> {
+            if (this.personalDetail != null) {
+                this.personalDetail.updatePersonalDetail(pDetail);
+            } else {
+                this.personalDetail = PersonalDetail.builder().build();
+                this.personalDetail.updatePersonalDetail(pDetail);
+            }
+        });
     }
 
     private void updateTheKins(Optional<List<PatientNextOfKinDto>> patientNextOfKinDtoList) {
-        if (patientNextOfKinDtoList.isPresent()) {
-            List<PatientNextOfKinDto> holder = patientNextOfKinDtoList.get();
-            List<PatientNextOfKin> theList = holder.stream()
-                    .map(nextOfKinDto -> UtilityService.convertToNextOfKin(nextOfKinDto))
-                    .collect(Collectors.toList());
-            this.patientNextOfKinList = theList;
-            this.patientNextOfKinList.stream()
-                    .forEach(patientNextOfKin -> patientNextOfKin.updateNextOfKinPatient(this));
-        }
+        patientNextOfKinDtoList.ifPresent(dtoList -> {
+            List<PatientNextOfKin> patientNextOfKins = new ArrayList<>();
+            for (PatientNextOfKinDto patientNextOfKinDto: dtoList) {
+                var patientNextOfKin = buildPatientNextOfKin(patientNextOfKinDto);
+                patientNextOfKin.updateNextOfKinPatient(this);
+                patientNextOfKins.add(patientNextOfKin);
+            }
+            this.patientNextOfKinList = patientNextOfKins;
+        });
 
+    }
+
+    private PatientNextOfKin buildPatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
+        var thePerson = Person.builder()
+                .gender(Gender.UNASSIGNED)
+                .build();
+        var patientNextOfKin = PatientNextOfKin.builder()
+                .person(thePerson)
+                .build();
+        patientNextOfKin.updatePatientNextOfKin(patientNextOfKinDto);
+        return patientNextOfKin;
     }
 
     public void setNextOfKins(List<PatientNextOfKin> theList) {
