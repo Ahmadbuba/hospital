@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name="patient_next_of_kin")
-@Builder
-@Getter @NoArgsConstructor @AllArgsConstructor
+@Builder @Getter @NoArgsConstructor @AllArgsConstructor
 public class PatientNextOfKin {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

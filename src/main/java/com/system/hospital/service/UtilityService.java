@@ -13,12 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@NoArgsConstructor
 public class UtilityService {
-
-    public static UtilityService getInstance() {
-        return new UtilityService();
-    }
 
     public Gender getGenderEnum(String theGender) {
             return theGender.equalsIgnoreCase("Male") ? Gender.MALE : Gender.FEMALE;

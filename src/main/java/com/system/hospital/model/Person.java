@@ -9,15 +9,11 @@ import lombok.*;
 import java.util.Optional;
 
 @Embeddable
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
+@Builder @Getter @NoArgsConstructor @AllArgsConstructor
 public class Person {
-    @NotBlank(message = "First name cannot be empty")
     private String firstName;
-
     private String lastName;
-
     @Enumerated(EnumType.STRING)
-    @NonNull
     private Gender gender;
 
 

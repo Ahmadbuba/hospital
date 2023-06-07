@@ -8,8 +8,6 @@ import com.system.hospital.repository.PatientRepository;
 import com.system.hospital.service.PatientService;
 import com.system.hospital.service.UtilityService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +22,13 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
     private final PatientNextOfKinRepository patientNextOfKinRepository;
     private final UtilityService utilityService;
+
     @Override
     @Transactional
     public long createPatient(PatientDto patientDto) {
-        Patient patient = utilityService.convertPatientDtoToPatient(patientDto);
+        Patient patient = Patient.builder().build();
+        patient.updatePatient(patientDto);
         patientRepository.save(patient);
-        if (patient.getPatientNextOfKinList().size() > 0) {
-            for (PatientNextOfKin patientNextOfKin : patient.getPatientNextOfKinList()) {
-                patientNextOfKin.updateNextOfKinPatient(patient);
-                patientNextOfKinRepository.save(patientNextOfKin);
-            }
-        }
         return patient.getId();
     }
     @Override
@@ -55,10 +49,11 @@ public class PatientServiceImpl implements PatientService {
     public long updatePatient(PatientDto patientDto, long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Patient with id =" + id));
+        boolean checkPatientDtoNextOfKins = patientDto.next_of_kins() != null && !patientDto.next_of_kins().isEmpty();
+        boolean checkPatientNextOfKinList = patient.getPatientNextOfKinList() != null && !patient.getPatientNextOfKinList().isEmpty();
 
-        if (patientDto.next_of_kins() != null && patientDto.next_of_kins().size() > 0) {
+        if (checkPatientDtoNextOfKins && checkPatientNextOfKinList) {
             patientNextOfKinRepository.deleteAll(patient.getPatientNextOfKinList());
-            patient.setPatientNextOfKinListNull();
         }
         patient.updatePatient(patientDto);
         patientRepository.save(patient);
@@ -86,5 +81,4 @@ public class PatientServiceImpl implements PatientService {
                 .map(patient -> utilityService.convertFromPatientToPatientResponse(patient))
                 .collect(Collectors.toList());
     }
-
 }

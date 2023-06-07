@@ -8,8 +8,7 @@ import java.util.Optional;
 
 @Entity
 @Table(name="address")
-@Builder
-@Getter @NoArgsConstructor @AllArgsConstructor
+@Builder @Getter @NoArgsConstructor @AllArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -6,7 +6,13 @@ import com.system.hospital.dto.*;
 import com.system.hospital.service.UtilityService;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,16 +20,30 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name= "patient")
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Builder @Getter @NoArgsConstructor @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private long id;
-    @NonNull
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
+
+    @CreatedBy
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @LastModifiedBy
+    @Column(name = "modified_by")
+    private String modifiedBy;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "firstName", column = @Column(name =
@@ -80,12 +100,6 @@ public class Patient {
                 Optional.ofNullable(patientDto.last_name()),
                 patientDto.gender()
         );
-//        Person thePerson = UtilityService.getInstance()
-//                .buildPerson(
-//                        patientDto.first_name(),
-//                        Optional.ofNullable(patientDto.last_name()),
-//                        patientDto.gender()
-//                );
         this.person = thePerson;
         this.updateTheAddress(Optional.ofNullable(patientDto.address()));
         this.updateThePersonalDetail(Optional.ofNullable(patientDto.personal_details()));
@@ -126,7 +140,7 @@ public class Patient {
         patientNextOfKinDtoList.ifPresent(dtoList -> {
             List<PatientNextOfKin> patientNextOfKins = new ArrayList<>();
             for (PatientNextOfKinDto patientNextOfKinDto: dtoList) {
-                var patientNextOfKin = buildPatientNextOfKin(patientNextOfKinDto);
+                PatientNextOfKin patientNextOfKin = buildPatientNextOfKin(patientNextOfKinDto);
                 patientNextOfKin.updateNextOfKinPatient(this);
                 patientNextOfKins.add(patientNextOfKin);
             }
