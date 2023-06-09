@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Builder @Getter @NoArgsConstructor @AllArgsConstructor
 public class PatientNextOfKin {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
 

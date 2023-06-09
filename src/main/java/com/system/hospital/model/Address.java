@@ -11,7 +11,7 @@ import java.util.Optional;
 @Builder @Getter @NoArgsConstructor @AllArgsConstructor
 public class Address {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "house_number")
     private int houseNumber;

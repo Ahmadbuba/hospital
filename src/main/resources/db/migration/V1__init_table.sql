@@ -1,118 +1,72 @@
 CREATE SCHEMA IF NOT EXISTS hospital;
 
-create table address (
-       id bigint not null,
-        house_number integer,
-        state varchar(255),
-        street varchar(255),
-        primary key (id)
+CREATE TABLE address (
+       id BIGSERIAL PRIMARY KEY,
+       house_number INTEGER,
+       state VARCHAR(255),
+       street VARCHAR(255)
 );
 
-create table doctor (
-       id bigint not null,
-       first_name varchar(255),
-       gender varchar(255) not null,
-       last_name varchar(255),
-       address_id bigint,
-       personal_detail_id bigint,
-       primary key (id)
+CREATE TABLE personal_detail (
+       id BIGSERIAL PRIMARY KEY,
+       blood_group VARCHAR(255),
+       genotype VARCHAR(255),
+       weight FLOAT(53)
 );
 
-create table doctor_next_of_kin (
-       id bigint not null,
-       first_name varchar(255),
-       gender varchar(255) not null,
-       last_name varchar(255),
-       address_id bigint,
-       doctor_id bigint,
-       primary key (id)
+CREATE TABLE doctor (
+       id BIGSERIAL PRIMARY KEY,
+       first_name VARCHAR(255),
+       gender VARCHAR(255) NOT NULL,
+       last_name VARCHAR(255),
+       address_id BIGINT,
+       personal_detail_id BIGINT,
+       CONSTRAINT fk_doctor_address FOREIGN KEY (address_id) REFERENCES address(id),
+       CONSTRAINT fk_doctor_personal_detail FOREIGN KEY (personal_detail_id) REFERENCES personal_detail(id)
 );
 
-create table health_record (
-       id bigint not null,
-       note varchar(255) not null,
-       date timestamp(6) not null,
-       doctor_id bigint not null,
-       patient_id bigint not null,
-       primary key (id)
+CREATE TABLE doctor_next_of_kin (
+       id BIGSERIAL PRIMARY KEY,
+       first_name VARCHAR(255),
+       gender VARCHAR(255) NOT NULL,
+       last_name VARCHAR(255),
+       address_id BIGINT,
+       doctor_id BIGINT,
+       CONSTRAINT fk_doctor_next_of_kin_address FOREIGN KEY (address_id) REFERENCES address(id),
+       CONSTRAINT fk_doctor_next_of_kin_doctor FOREIGN KEY (doctor_id) REFERENCES doctor(id)
 );
 
-create table patient (
-       id bigint not null,
-       first_name varchar(255),
-       gender varchar(255) not null,
-       last_name varchar(255),
-       address_id bigint,
-       personal_detail_id bigint,
-       primary key (id)
+CREATE TABLE patient (
+       id BIGSERIAL PRIMARY KEY,
+       first_name VARCHAR(255),
+       gender VARCHAR(255) NOT NULL,
+       last_name VARCHAR(255),
+       address_id BIGINT,
+       personal_detail_id BIGINT,
+       CONSTRAINT fk_patient_address FOREIGN KEY (address_id) REFERENCES address(id),
+       CONSTRAINT fk_patient_personal_detail FOREIGN KEY (personal_detail_id) REFERENCES personal_detail(id)
 );
 
-create table patient_next_of_kin (
-       id bigint not null,
-       first_name varchar(255),
-       gender varchar(255) not null,
-       last_name varchar(255),
-       address_id bigint,
-       patient_id bigint,
-       primary key (id)
+CREATE TABLE health_record (
+       id BIGSERIAL PRIMARY KEY,
+       note VARCHAR(255) NOT NULL,
+       date TIMESTAMP(6) NOT NULL,
+       doctor_id BIGINT NOT NULL,
+       patient_id BIGINT NOT NULL,
+       CONSTRAINT fk_health_record_doctor FOREIGN KEY (doctor_id) REFERENCES doctor(id),
+       CONSTRAINT fk_health_record_patient FOREIGN KEY (patient_id) REFERENCES patient(id)
 );
 
-create table personal_detail (
-       id bigint not null,
-       blood_group varchar(255),
-       genotype varchar(255),
-       weight float(53),
-       primary key (id)
+
+
+CREATE TABLE patient_next_of_kin (
+       id BIGSERIAL PRIMARY KEY,
+       first_name VARCHAR(255),
+       gender VARCHAR(255) NOT NULL,
+       last_name VARCHAR(255),
+       address_id BIGINT,
+       patient_id BIGINT,
+       CONSTRAINT fk_patient_next_of_kin_address FOREIGN KEY (address_id) REFERENCES address(id),
+       CONSTRAINT fk_patient_next_of_kin_patient FOREIGN KEY (patient_id) REFERENCES patient(id)
 );
 
-alter table if exists doctor
-    add constraint FK55wcpoxucujk1vqonmjuljb2y
-    foreign key (address_id)
-references address;
-
-alter table if exists doctor
-    add constraint FKkx9kv7cplj5b3krbctorll3ae
-    foreign key (personal_detail_id)
-references personal_detail;
-
-alter table if exists doctor_next_of_kin
-    add constraint FKjvyujb1pxv7j3mxn0qt5ndhko
-    foreign key (address_id)
-references address;
-
-
-alter table if exists doctor_next_of_kin
-    add constraint FKd1urd7vkbn81no85cxm1a7qqj
-    foreign key (doctor_id)
-references doctor;
-
-alter table if exists health_record
-    add constraint FKqaarpksv2jh0gvb2xaih72ffv
-    foreign key (doctor_id)
-references doctor;
-
-alter table if exists health_record
-    add constraint FK4uewhggve44h1rv02eskd2rt0
-    foreign key (patient_id)
-references patient;
-
-alter table if exists patient
-    add constraint FKlpwpmtdbdvnxm8fxlxpq2fugh
-    foreign key (address_id)
-references address;
-
-alter table if exists patient
-    add constraint FKkytecbf0854qy166nd47a9trb
-    foreign key (personal_detail_id)
-references personal_detail;
-
-
-alter table if exists patient_next_of_kin
-    add constraint FK7ewbtyf9i7iw6ex2nbmu6yx12
-    foreign key (address_id)
-references address;
-
-alter table if exists patient_next_of_kin
-    add constraint FK3qku406uoev60xs0t78e7k2i7
-    foreign key (patient_id)
-references patient;

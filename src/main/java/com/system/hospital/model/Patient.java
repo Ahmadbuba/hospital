@@ -22,28 +22,11 @@ import java.util.stream.Collectors;
 @Table(name= "patient")
 @Builder @Getter @NoArgsConstructor @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Patient {
+public class Patient extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
-
-    @CreatedBy
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name = "modified_by")
-    private String modifiedBy;
-
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "firstName", column = @Column(name =
@@ -84,17 +67,11 @@ public class Patient {
     @JsonIgnore
     private List<HealthRecord> records;
 
-    public void updatePerson(Person thePerson) {
-        this.person = thePerson;
-    }
-
     public void setPatientNextOfKinListNull() {
         this.patientNextOfKinList = null;
     }
     public void updatePatient(PatientDto patientDto) {
-        Person thePerson = Person.builder()
-                .gender(Gender.UNASSIGNED)
-                .build();
+        Person thePerson = Person.builder().build();
         thePerson.updatePerson(
                 patientDto.first_name(),
                 Optional.ofNullable(patientDto.last_name()),
@@ -117,13 +94,6 @@ public class Patient {
         });
     }
 
-//    private void thePersonalDetail(Optional<PersonalDetailDto> myPersonalDetail) {
-//        if (this.personalDetail != null) {
-//            this.personalDetail.updatePersonalDetail(thePersonalDetail);
-//        } else  {
-//            this.personalDetail = UtilityService.getInstance().buildPersonalDetail(thePersonalDetail);
-//        }
-//    }
 
     private void updateThePersonalDetail(Optional<PersonalDetailDto> myPersonalDetail) {
         myPersonalDetail.ifPresent(pDetail -> {

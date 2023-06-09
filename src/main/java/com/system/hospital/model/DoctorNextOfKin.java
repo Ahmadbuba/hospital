@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter @NoArgsConstructor @AllArgsConstructor
 public class DoctorNextOfKin {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
 

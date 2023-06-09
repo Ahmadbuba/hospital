@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter @NoArgsConstructor @AllArgsConstructor
 public class Doctor {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private long id;
 	@Embedded

@@ -1,15 +1,13 @@
--- V2__Add_Auditing_to_Patient_Table.sql
-
 -- Add auditing columns
-alter table if exists patient
-    add column created_at timestamp(6),
-    add column modified_at timestamp(6),
-    add column created_by varchar(255),
-    add column modified_by varchar(255);
+ALTER TABLE IF EXISTS patient
+    ADD COLUMN created_by VARCHAR(255),
+    ADD COLUMN created_date TIMESTAMP(6),
+    ADD COLUMN last_modified_by VARCHAR(255),
+    ADD COLUMN last_modified_date TIMESTAMP(6);
 
 -- Set default values for auditing columns
-update patient
-    set created_at = current_timestamp,
-        modified_at = current_timestamp,
+UPDATE patient
+    SET created_date = current_timestamp,
+        last_modified_date = current_timestamp,
         created_by = 'system',
-        modified_by = 'system';
+        last_modified_by = 'system';
