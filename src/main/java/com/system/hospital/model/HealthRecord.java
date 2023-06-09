@@ -1,10 +1,6 @@
 package com.system.hospital.model;
 
 import java.time.OffsetDateTime;
-import java.util.List;
-
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;

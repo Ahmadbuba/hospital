@@ -1,9 +1,6 @@
 package com.system.hospital.model;
 
-import com.system.hospital.dto.PersonDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.Optional;

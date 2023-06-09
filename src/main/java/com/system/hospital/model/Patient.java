@@ -1,22 +1,15 @@
 package com.system.hospital.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.system.hospital.dto.*;
-import com.system.hospital.service.UtilityService;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Entity
 @Table(name= "patient")
@@ -120,9 +113,7 @@ public class Patient extends Auditable {
     }
 
     private PatientNextOfKin buildPatientNextOfKin(PatientNextOfKinDto patientNextOfKinDto) {
-        var thePerson = Person.builder()
-                .gender(Gender.UNASSIGNED)
-                .build();
+        var thePerson = Person.builder().build();
         var patientNextOfKin = PatientNextOfKin.builder()
                 .person(thePerson)
                 .build();
