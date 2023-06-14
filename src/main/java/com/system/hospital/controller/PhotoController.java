@@ -31,7 +31,7 @@ public class PhotoController {
         try {
             byte[] photoBytes = file.getBytes();
             String photoName = file.getOriginalFilename();
-            String bucketName = "your-bucket-name";
+            String bucketName = "patient-photo";
 
             BlobId blobId = BlobId.of(bucketName, photoName);
             Blob blob = storage.create(
