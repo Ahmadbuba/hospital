@@ -15,6 +15,7 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
+    enabled: false
     locations: classpath:db/migration
     schemas: hospital
     baseline-on-migrate: true
@@ -24,6 +25,16 @@ spring:
   jackson:
     mapper:
       ALLOW_COERCION_OF_SCALARS: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  cloud:
+    gcp:
+      storage:
+        projectId: focused-evening-348416
+      credentials:
+        location: classpath:/focused-evening-348416-8edd3cea197f.json
+
 
 
 
