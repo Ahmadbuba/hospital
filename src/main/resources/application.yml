@@ -1,3 +1,6 @@
+gcp:
+  bucket:
+    name: patient-photos
 spring:
   application:
     name: Hospital System
@@ -33,7 +36,7 @@ spring:
       storage:
         projectId: focused-evening-348416
       credentials:
-        location: classpath:/focused-evening-348416-8edd3cea197f.json
+        location: classpath:/focused-evening-348416-bbd37ec82ab7.json
 
 
 

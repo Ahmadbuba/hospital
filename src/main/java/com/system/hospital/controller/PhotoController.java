@@ -3,6 +3,7 @@ package com.system.hospital.controller;
 import com.google.cloud.storage.*;
 import com.system.hospital.model.Photo;
 import com.system.hospital.repository.PhotoRepository;
+import com.system.hospital.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,38 +18,12 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/photos")
 public class PhotoController {
-    private final Storage storage;
-    private final PhotoRepository photoRepository;
-
     @Autowired
-    public PhotoController(PhotoRepository photoRepository) {
-        this.photoRepository = photoRepository;
-        storage = StorageOptions.getDefaultInstance().getService();
-    }
+    FileService fileService;
 
     @PostMapping
-    public ResponseEntity<Photo> uploadPhoto(@RequestParam("file") MultipartFile file) {
-        try {
-            byte[] photoBytes = file.getBytes();
-            String photoName = file.getOriginalFilename();
-            String bucketName = "patient-photo";
-
-            BlobId blobId = BlobId.of(bucketName, photoName);
-            Blob blob = storage.create(
-                    BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build(),
-                    photoBytes
-            );
-
-            String photoUrl = blob.getMediaLink();
-            Photo photo = Photo.builder()
-                    .photoName(photoName)
-                    .photoUrl(photoUrl)
-                    .build();
-            photoRepository.save(photo);
-
-            return ResponseEntity.ok(photo);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<String> uploadPhoto(@RequestParam MultipartFile file) throws IOException {
+        fileService.uploadFile(file);
+        return ResponseEntity.ok("File uploaded successfully");
     }
 }

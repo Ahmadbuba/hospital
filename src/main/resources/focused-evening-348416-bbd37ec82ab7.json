@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "focused-evening-348416",
+  "private_key_id": "bbd37ec82ab7ce2147ee348ced769d16e4e7f2af",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCk0i+Ik1kqmDYs\nUZ6u0HX5I+pBNEXxOq90t4IFlIfq0OvSJn5guTG4furiTN8uLVr9MOUo49ULwdTD\nxsvMQsqYO75lUcpUlPY2MjPjmziRRud0Ha+wHZC/PPLelgIBYXHuDX1uzh6Q36CW\nhQolftdbKgVvQC0G62haKSpGONCpvoEXom/RK7LrgPta36Ukm4dKbhmCHMiCpX75\nS7gorzFLX/gyiKxE/TQBOT34laOVgKn3MGwD52i9e74y6L+xkB4UzJ/PwZmc+yhT\nzUGGb81R3b/ta5ZAC2cPCoLlT9lwGkbDMpflx6397QfCkfiOAX7Ek6VzK6xyTbe/\nDYTc551ZAgMBAAECggEARanhFWTSJ0K2gvzsiQ7rDiaz+GNTvKYFStvVRO6GlCVB\nx00l1VPxQ/3A4W2EV0wsTR/BfArwHUwL1cPMl8UTREzcKI7tadqcRkPp0qXkvuKt\nKVLy0wlsCKiGLrZQmqzJLsjc31yXZrxeb8BDjZ2TAKE+Mst5PJd7P8BuccfJyjRh\nFeCg8wOHFc8qshAYjljdGm0XpoOVv2YjAVaACqRD0KTKHfET1Qnwfs1y7M3F6ca5\niShwWJZN7P0RMr2oc1O0XReXn96a9XToV8rb26+wPGcFAvCdfwZqF6MZV5fxGKUR\nIAXlRf+SneH1d78UIGTyn2Zljc36WretoWarEKaVUQKBgQDYH7fTSPAOKec2cGQS\nHrdlg5+xvcdegX14vTvQWRRDcTe18lrM8z2CafexjUbWTCFzmEvynWH35DM7mtQi\nvJHSBfLrC9bQ7LdZdSIuuXM2CcJl5/DDUmPQ7SPQW6cBNZ334U8FHvJj4tYRJHp7\nZ9dabyGpCmg8LEW8oriRMW2FWwKBgQDDO0FikgZkFnUOSPubBbrrEjyWF0JDMrGh\n1fGnQVB9pbtTtgn/WcEfC3bECNHmiiITEVp16oH6x/RtAb6F9ECoGYjQiGpxjjgS\nn/EX131ZeJ121oQZR+SlffByogvWVnMyoQ6Xb4IR5tlrH5V5rdNQeEJc7fYxiIRW\nHV06bpOCWwKBgF/rA8yzzEac9k7E5sTb+Q0Gs7NQxND+q08QvSEkx8d+0fjgTMg1\nFBFzMkkMqGmndBk3eE1+5+H613oWpxubkSQjG8KRiI9E38LGJ5uRFr7e6fYMUGB/\nimlJNeHdK2tv/mHrDwT4zR7jp5oIFIv8dClgtRGu2sAJ7hFgLoXR6AeNAoGAIlmr\nsHc27qdQ4zmOI4GHmNK1nEbtXrttq6bkBOSmD+V4J0txSN927kprFCTlIaYORsKX\n4wVm50QFSqSy7AjE047ilqZZ7C70yLohhmtg37wsIHuv9G7E2SVmiBTg9k5xqGfU\nFGsHPLUcbg+5khY2hwMR0h4AYki92BUEkUJha98CgYEAhCiUeJ4By90tCXJY8qDV\n6vLzIZsNq90Poqs3SA2rFUE38ZrrUQaTm8016vRgBE4OpolTsrNVnnQ3dfc4bAlB\ndCRKlBs/Afamb2XzmPBj2sGUhEszZcVxjxVtYzIpkXz3BM41kbaAb0w01kGQKxTR\nwSe+D7lCviw/0rg2UNfTwZo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "hospital@focused-evening-348416.iam.gserviceaccount.com",
+  "client_id": "108688962937533095801",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hospital%40focused-evening-348416.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
